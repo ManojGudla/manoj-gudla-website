@@ -1,0 +1,229 @@
+import Link from "next/link";
+import { Photo } from "@/components/site/Photo";
+import { PlayIcon } from "@/components/ui/icons";
+import { devStatusLabel, platformLabel, statValue, formatDate, youtubeId } from "@/lib/format";
+import type { Achievement, CreatorContent, CreatorStat, Project, ResolvedMedia, SiteContent, VisionItem } from "@/lib/types";
+import { resolveMediaFrom } from "./resolve";
+
+export function PageIntro({ title, lead, children }: { title: string; lead?: string; children?: React.ReactNode }) {
+  return (
+    <section className="container page-intro">
+      <h1 data-reveal>{title}</h1>
+      {lead && (
+        <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms" }}>
+          {lead}
+        </p>
+      )}
+      {children}
+    </section>
+  );
+}
+
+export function SectionHead({ title, sub, children }: { title: string; sub?: string; children?: React.ReactNode }) {
+  return (
+    <div className="split__head">
+      <h2 className="section-title" data-reveal>
+        {title}
+      </h2>
+      {sub && <p className="section-sub">{sub}</p>}
+      {children}
+    </div>
+  );
+}
+
+export function DraftFlag({ status }: { status: string }) {
+  if (status !== "draft") return null;
+  return <span className="draft-flag">Draft</span>;
+}
+
+export function StatusChip({ status }: { status: Project["dev_status"] }) {
+  return (
+    <span className="chip">
+      <span className={`status-dot ${status === "live" ? "status-dot--live" : ""}`} aria-hidden />
+      {devStatusLabel[status]}
+    </span>
+  );
+}
+
+export function FeatureProject({ project, content }: { project: Project; content: SiteContent }) {
+  const cover = resolveMediaFrom(content, project.cover_media_id);
+  return (
+    <Link href={`/projects/${project.slug}`} className={`feature ${cover ? "" : "feature--text"}`} data-tilt>
+      {cover && (
+        <div className="feature__media">
+          <Photo media={cover} label="Project screenshot" sizes="(min-width: 900px) 55vw, 100vw" />
+        </div>
+      )}
+      <div className="feature__body">
+        <StatusChip status={project.dev_status} /> <DraftFlag status={project.status} />
+        <h3 className="feature__title">{project.title}</h3>
+        <p>{project.tagline || project.summary}</p>
+        {project.technologies.length > 0 && (
+          <ul className="chips" role="list" style={{ marginTop: "1.25rem" }}>
+            {project.technologies.slice(0, 5).map((t) => (
+              <li key={t} className="chip">
+                {t}
+              </li>
+            ))}
+          </ul>
+        )}
+        <span className="feature__more">Read the project story</span>
+      </div>
+    </Link>
+  );
+}
+
+export function ProjectCard({ project, content }: { project: Project; content: SiteContent }) {
+  const cover = resolveMediaFrom(content, project.cover_media_id);
+  return (
+    <Link href={`/projects/${project.slug}`} className="project-card" data-tilt>
+      {cover && <Photo media={cover} label="Project screenshot" sizes="(min-width: 760px) 50vw, 100vw" />}
+      <div>
+        <StatusChip status={project.dev_status} /> <DraftFlag status={project.status} />
+        <h3 style={{ marginTop: "0.6rem" }}>{project.title}</h3>
+        <p className="muted" style={{ marginTop: "0.4rem" }}>
+          {project.summary || project.tagline}
+        </p>
+      </div>
+    </Link>
+  );
+}
+
+export function StatList({ stats }: { stats: CreatorStat[] }) {
+  if (stats.length === 0) return null;
+  return (
+    <div className="stats">
+      {stats.map((s) => (
+        <div className="stat" key={s.id}>
+          <div className="stat__value">{statValue(s)}</div>
+          <div className="stat__label">
+            {s.label} <DraftFlag status={s.status} />
+          </div>
+          <div className="stat__note">
+            {s.verification === "verified"
+              ? `Verified ${formatDate(s.verified_on, { day: "numeric", month: "short", year: "numeric" })}`
+              : "Self-reported"}
+            {s.last_updated ? `, updated ${formatDate(s.last_updated)}` : ""}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function ContentCard({ item, content }: { item: CreatorContent; content: SiteContent }) {
+  const uploaded: ResolvedMedia | null = resolveMediaFrom(content, item.thumbnail_media_id);
+  const yt = item.platform === "youtube" ? youtubeId(item.url) : null;
+  const thumb: ResolvedMedia | null =
+    uploaded ?? (yt ? { id: yt, url: `https://i.ytimg.com/vi/${yt}/hqdefault.jpg`, alt: "", width: 480, height: 360, mime: "image/jpeg" } : null);
+  const portrait = item.platform === "instagram";
+  return (
+    <a
+      href={item.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`content-card ${portrait ? "content-card--portrait" : ""}`}
+    >
+      <div style={{ position: "relative" }}>
+        <Photo
+          media={thumb ? { ...thumb, alt: thumb.alt || `Thumbnail: ${item.title}` } : null}
+          label={`${platformLabel[item.platform]} thumbnail`}
+          sizes="(min-width: 1000px) 33vw, (min-width: 640px) 50vw, 100vw"
+        />
+        {item.platform === "youtube" && (
+          <span className="play" aria-hidden>
+            <span>
+              <PlayIcon />
+            </span>
+          </span>
+        )}
+      </div>
+      <div>
+        <p className="meta">
+          {platformLabel[item.platform]}
+          {item.published_on ? `, ${formatDate(item.published_on)}` : ""} <DraftFlag status={item.status} />
+        </p>
+        <h3 style={{ marginTop: "0.3rem" }}>{item.title}</h3>
+        {item.description && (
+          <p className="muted" style={{ marginTop: "0.35rem", fontSize: "var(--fs-small)" }}>
+            {item.description}
+          </p>
+        )}
+        <span className="sr-only"> (opens {platformLabel[item.platform]} in a new tab)</span>
+      </div>
+    </a>
+  );
+}
+
+const kindLabel: Record<Achievement["kind"], string> = {
+  highlight: "Personal highlight",
+  award: "Award",
+  certification: "Certification",
+  recognition: "Recognition",
+  hackathon: "Hackathon",
+  mentoring: "Mentoring",
+  milestone: "Milestone",
+};
+
+export { kindLabel };
+
+export function Highlights({ items }: { items: Achievement[] }) {
+  if (items.length === 0) return null;
+  return (
+    <div className="highlights">
+      {items.map((a, i) => (
+        <article className="highlight" key={a.id} data-reveal style={{ ["--rd" as string]: `${i * 120}ms` }}>
+          <p className="kind">
+            {kindLabel[a.kind]} <DraftFlag status={a.status} />
+          </p>
+          <div>
+            <h3>{a.title}</h3>
+            {a.focus && <p className="focus">{a.focus}</p>}
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+const HORIZONS = ["Now", "Next", "Long term"];
+
+/** Groups vision items into time horizons; anything else goes under "Ongoing". */
+export function Horizons({ items }: { items: VisionItem[] }) {
+  const groups = new Map<string, VisionItem[]>();
+  for (const v of items) {
+    const key = HORIZONS.includes(v.horizon) ? v.horizon : "Ongoing";
+    groups.set(key, [...(groups.get(key) ?? []), v]);
+  }
+  const order = ["Now", "Ongoing", "Next", "Long term"].filter((k) => groups.has(k));
+  return (
+    <div className="horizons">
+      {order.map((h) => (
+        <section className="horizon" key={h} aria-label={h}>
+          <h3>{h}</h3>
+          <ul role="list">
+            {groups.get(h)!.map((v) => (
+              <li key={v.id}>
+                <h4>
+                  {v.title} <DraftFlag status={v.status} />
+                </h4>
+                {v.description && <p>{v.description}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+/** "Digital Creator | Technology & Lifestyle" → main title + quieter subtitle. */
+export function SplitTitle({ text }: { text: string }) {
+  const [main, ...rest] = text.split("|").map((t) => t.trim());
+  return (
+    <>
+      {main}
+      {rest.length > 0 && <span className="title-sub">{rest.join(" · ")}</span>}
+    </>
+  );
+}

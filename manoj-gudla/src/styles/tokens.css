@@ -1,0 +1,87 @@
+/* ==========================================================================
+   Design tokens — Premium Light (default) and Premium Dark.
+   Accent: ultramarine. One accent, used for links, focus, highlights and the
+   hero object. Everything else is ink, charcoal, warm white and soft grey.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Palette — light */
+  --paper: #f4f2ee;        /* warm white page */
+  --paper-2: #ebe8e2;      /* soft grey-warm band */
+  --surface: #fbfaf7;      /* raised surfaces */
+  --ink: #141416;          /* sophisticated black */
+  --ink-2: #393940;        /* deep charcoal text */
+  --muted: #66645e;        /* soft grey text (≥ 4.5:1 on paper) */
+  --line: #d8d4cc;         /* hairlines */
+  --line-strong: #bdb8ae;
+  --accent: #2a36d4;       /* ultramarine */
+  --accent-hover: #1f29b0;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(42 54 212 / 0.08);
+  --danger: #b42318;
+  --success: #116b3a;
+  --warning: #8a5a00;
+
+  /* Typography */
+  --font-display: var(--font-newsreader), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --fs-name: clamp(3.1rem, 13.5vw, 8.75rem);
+  --fs-h1: clamp(2.5rem, 6.4vw, 5.25rem);
+  --fs-h2: clamp(2rem, 4.2vw, 3.4rem);
+  --fs-h3: clamp(1.35rem, 2vw, 1.6rem);
+  --fs-lead: clamp(1.2rem, 1.9vw, 1.5rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.9375rem;
+  --fs-meta: 0.8125rem;
+
+  /* Space & layout */
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --max: 1240px;
+  --measure: 66ch;
+  --section: clamp(4.5rem, 10vw, 9rem);
+
+  /* Shape — radius follows hierarchy, not one value everywhere */
+  --r-frame: 2px;
+  --r-panel: 10px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 160ms;
+  --t-med: 420ms;
+  --t-slow: 900ms;
+
+  --shadow-lift: 0 1px 0 rgb(20 20 22 / 0.04), 0 18px 40px -24px rgb(20 20 22 / 0.28);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #121214;
+  --paper-2: #18181b;
+  --surface: #1d1d21;
+  --ink: #efece6;
+  --ink-2: #cbc8c1;
+  --muted: #9b988f;
+  --line: #2c2c31;
+  --line-strong: #44444b;
+  --accent: #8f98ff;
+  --accent-hover: #aeb4ff;
+  --accent-ink: #0d0f2e;
+  --accent-soft: rgb(143 152 255 / 0.1);
+  --danger: #ff8a7a;
+  --success: #6fd49a;
+  --warning: #f0c060;
+  --shadow-lift: 0 1px 0 rgb(0 0 0 / 0.3), 0 24px 48px -28px rgb(0 0 0 / 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 1ms;
+    --t-med: 1ms;
+    --t-slow: 1ms;
+  }
+}
