@@ -10,11 +10,11 @@ I''m passionate about technology, emerging AI tools, content creation and entrep
 
 I enjoy experimenting with ideas, developing new skills, connecting with people and exploring opportunities.
 
-Beyond my professional journey, I enjoy creating YouTube videos and Instagram reels, exploring business ideas and discovering new technologies.', 'I''m a technology professional at Tata Consultancy Services (TCS), currently contributing to an AI and machine learning project. Alongside my role, I build independent products, create content and keep learning the tools that are shaping what comes next.', 'I''m working towards AI and technology innovation roles — where curiosity, problem-solving and building things people actually use come together.', 'I believe in thinking big, taking action and learning along the way.', 'Hyderabad, India', false, 'manowj.tech@gmail.com', 'https://linkedin.com/in/manojkumar946', 'https://www.instagram.com/manowj_official/', 'https://www.youtube.com/@maNOWj_Official', 'https://github.com/ManojGudla', 'Digital Creator | Technology & Lifestyle', 'I create YouTube videos and Instagram reels about technology, AI and emerging tools — and the lifestyle around building things. The aim is simple: make new technology feel approachable, useful and a little more exciting.', '2+ years', '', 'AI & machine learning', 'Tech videos on YouTube & Instagram', 'I help brands reach a tech-curious audience and help businesses use technology better. If one of these fits what you need, tell me about it.', null, null, null, null)
+Beyond my professional journey, I enjoy creating YouTube videos and Instagram reels, exploring business ideas and discovering new technologies.', 'I''m a technology professional at Tata Consultancy Services (TCS), currently contributing to an AI and machine learning project. Alongside my role, I build independent products, create content and keep learning the tools that are shaping what comes next.', 'I''m working towards AI and technology innovation roles, where curiosity, problem-solving and building things people actually use come together.', 'I believe in thinking big, taking action and learning along the way.', 'Hyderabad, India', false, 'manowj.tech@gmail.com', 'https://linkedin.com/in/manojkumar946', 'https://www.instagram.com/manowj_official/', 'https://www.youtube.com/@maNOWj_Official', 'https://github.com/ManojGudla', 'Digital Creator | Technology & Lifestyle', 'I create YouTube videos and Instagram reels about technology, AI and emerging tools, and the lifestyle around building things. The aim is simple: make new technology feel approachable, useful and a little more exciting.', '2+ years', '', 'AI & machine learning', 'Tech videos on YouTube & Instagram', 'I help brands reach a tech-curious audience and help businesses use technology better. If one of these fits what you need, tell me about it.', null, null, null, null)
 on conflict do nothing;
 
 insert into public.site_settings (id, site_title, tagline, seo_title, meta_description, default_theme, footer_text, contact_email, og_media_id) values
-  (1, 'Manoj Kumar Gudla', 'Think Beyond Limits. Build What Matters.', 'Manoj Kumar Gudla — Technology Professional, Digital Creator & Builder', 'Manoj Kumar Gudla is a technology professional, AI & innovation enthusiast, digital creator and entrepreneurial builder. Explore his work, projects, content and ways to connect.', 'system', 'Think Beyond Limits. Build What Matters.', 'manowj.tech@gmail.com', null)
+  (1, 'Manoj Kumar Gudla', 'Think Beyond Limits. Build What Matters.', 'Manoj Kumar Gudla | Technology Professional, Digital Creator & Builder', 'Manoj Kumar Gudla is a technology professional, AI & innovation enthusiast, digital creator and entrepreneurial builder. Explore his work, projects, content and ways to connect.', 'system', 'Think Beyond Limits. Build What Matters.', 'manowj.tech@gmail.com', null)
 on conflict do nothing;
 
 insert into public.experience (id, organisation, role_title, employment_type, location, start_label, end_label, is_current, summary, responsibilities, sort_order, status) values
@@ -50,7 +50,9 @@ insert into public.certifications (id, title, issuer, issued_label, credential_u
   ('00000000-0000-4000-8004-000000000003', 'Pearson MePro English', 'Pearson', '', '', null, 30, 'published')
 on conflict do nothing;
 
--- projects: no starting rows
+insert into public.projects (id, slug, title, tagline, summary, overview, purpose, dev_status, features, technologies, roadmap, live_url, repo_url, cover_media_id, is_featured, sort_order, status) values
+  ('00000000-0000-4000-8005-000000000001', 'manowj-geointel', 'maNOWj GeoIntel', 'A free map-based web app that answers questions about any place, with the source and date shown next to every answer.', 'A free map-based web app that answers questions about any place, with the source and date shown next to every answer.', 'maNOWj GeoIntel is an independent product I design and build. You pick a place on the map and ask about it: what''s nearby, how to get there, what the weather and air are like, how many people live there. Every answer shows where it came from and how recent it is. If a source has no figure, the app says so instead of guessing.', 'Information about places is spread across many open data sources and is often shown without context. GeoIntel brings those sources together in one place and shows where each answer comes from, so people can trust what they see and decide for themselves.', 'live', array['Counts of hospitals, schools, shops, ATMs and other places within a chosen radius', 'Directions with live turn-by-turn navigation', 'Weather, air quality and rain radar', 'Population, area and density, with the census year shown', 'Satellite view or 3D buildings, with the imagery date shown', 'Distance and area measurement', 'maNOWj Daily, a daily game of guessing locations from satellite views']::text[], array['Next.js', 'Vercel', 'OpenStreetMap', 'Overpass', 'Nominatim', 'OSRM', 'Open-Meteo', 'Wikidata']::text[], '{}'::text[], 'https://www.manowj.com/', 'https://github.com/ManojGudla', null, true, 10, 'published')
+on conflict do nothing;
 
 -- creator_content: no starting rows
 
@@ -61,21 +63,21 @@ insert into public.creator_stats (id, platform, label, value, value_suffix, veri
 on conflict do nothing;
 
 insert into public.achievements (id, kind, title, focus, description, issuer, date_label, link_url, media_id, sort_order, status) values
-  ('00000000-0000-4000-8007-000000000001', 'highlight', 'Independent Technology Initiative', 'Product building, innovation and entrepreneurial exploration.', 'Designing and building independent products — from first idea to launch.', '', '', '', null, 10, 'published'),
+  ('00000000-0000-4000-8007-000000000001', 'highlight', 'Independent Technology Initiative', 'Product building, innovation and entrepreneurial exploration.', 'Designing and building independent products, from first idea to launch.', '', '', '', null, 10, 'published'),
   ('00000000-0000-4000-8007-000000000002', 'highlight', 'Digital Creator & Brand Builder', 'Content creation, storytelling and personal brand development.', 'Creating YouTube videos and Instagram reels on technology, AI and lifestyle, and building the maNOWj brand.', '', '', '', null, 20, 'published')
 on conflict do nothing;
 
 insert into public.interests (id, title, description, sort_order, status) values
-  ('00000000-0000-4000-8008-000000000001', 'Technology exploration', 'Trying new tools, devices and platforms early — and figuring out what they''re actually good for.', 10, 'published'),
+  ('00000000-0000-4000-8008-000000000001', 'Technology exploration', 'Trying new tools, devices and platforms early and figuring out what they''re actually good for.', 10, 'published'),
   ('00000000-0000-4000-8008-000000000002', 'AI experimentation', 'Testing emerging AI tools hands-on, building small experiments and learning what works in practice.', 20, 'published'),
   ('00000000-0000-4000-8008-000000000003', 'Content creation', 'Turning ideas into YouTube videos and Instagram reels that make technology approachable.', 30, 'published'),
   ('00000000-0000-4000-8008-000000000004', 'Entrepreneurship', 'Exploring business ideas, building products and learning how good ideas become real ventures.', 40, 'published'),
-  ('00000000-0000-4000-8008-000000000005', 'Networking', 'Meeting builders, creators and professionals — and learning from how they think.', 50, 'published'),
+  ('00000000-0000-4000-8008-000000000005', 'Networking', 'Meeting builders, creators and professionals and learning from how they think.', 50, 'published'),
   ('00000000-0000-4000-8008-000000000006', 'Learning & experimentation', 'Picking up new skills by doing: small projects, quick prototypes and plenty of iteration.', 60, 'published')
 on conflict do nothing;
 
 insert into public.vision_items (id, area, title, description, horizon, sort_order, status) values
-  ('00000000-0000-4000-8009-000000000001', 'technologies', 'AI & machine learning', 'Going deeper into AI and ML — from emerging tools to the fundamentals behind them.', 'Now', 10, 'published'),
+  ('00000000-0000-4000-8009-000000000001', 'technologies', 'AI & machine learning', 'Going deeper into AI and ML, from emerging tools to the fundamentals behind them.', 'Now', 10, 'published'),
   ('00000000-0000-4000-8009-000000000002', 'products', 'Build useful AI-powered tools', 'Turning ideas into simple products that solve everyday problems.', 'Next', 20, 'published'),
   ('00000000-0000-4000-8009-000000000003', 'business', 'Digital services for businesses', 'Helping businesses use technology and digital media to reach more people.', 'Next', 30, 'published'),
   ('00000000-0000-4000-8009-000000000004', 'skills', 'Data analytics & full-stack building', 'Sharpening analytics, Power BI and modern web development skills.', 'Ongoing', 40, 'published'),

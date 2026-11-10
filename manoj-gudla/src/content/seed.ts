@@ -60,7 +60,7 @@ export const seedProfile: Profile = {
   professional_intro:
     "I'm a technology professional at Tata Consultancy Services (TCS), currently contributing to an AI and machine learning project. Alongside my role, I build independent products, create content and keep learning the tools that are shaping what comes next.",
   career_direction:
-    "I'm working towards AI and technology innovation roles — where curiosity, problem-solving and building things people actually use come together.",
+    "I'm working towards AI and technology innovation roles, where curiosity, problem-solving and building things people actually use come together.",
   philosophy: "I believe in thinking big, taking action and learning along the way.",
   location: "Hyderabad, India",
   show_location: false,
@@ -71,7 +71,7 @@ export const seedProfile: Profile = {
   github_url: "https://github.com/ManojGudla",
   creator_title: "Digital Creator | Technology & Lifestyle",
   creator_intro:
-    "I create YouTube videos and Instagram reels about technology, AI and emerging tools — and the lifestyle around building things. The aim is simple: make new technology feel approachable, useful and a little more exciting.",
+    "I create YouTube videos and Instagram reels about technology, AI and emerging tools, and the lifestyle around building things. The aim is simple: make new technology feel approachable, useful and a little more exciting.",
   experience_summary: "2+ years",
   now_building: "",
   now_learning: "AI & machine learning",
@@ -89,7 +89,7 @@ export const seedSettings: SiteSettings = {
   ...ts,
   site_title: "Manoj Kumar Gudla",
   tagline: "Think Beyond Limits. Build What Matters.",
-  seo_title: "Manoj Kumar Gudla — Technology Professional, Digital Creator & Builder",
+  seo_title: "Manoj Kumar Gudla | Technology Professional, Digital Creator & Builder",
   meta_description:
     "Manoj Kumar Gudla is a technology professional, AI & innovation enthusiast, digital creator and entrepreneurial builder. Explore his work, projects, content and ways to connect.",
   default_theme: "system",
@@ -211,7 +211,38 @@ export const seedCertifications: Certification[] = [
 }));
 
 /** No projects yet — add them from the admin dashboard. */
-export const seedProjects: Project[] = [];
+export const seedProjects: Project[] = [
+  {
+    id: id(5, 1),
+    ...ts,
+    slug: "manowj-geointel",
+    title: "maNOWj GeoIntel",
+    tagline: "A free map-based web app that answers questions about any place, with the source and date shown next to every answer.",
+    summary: "A free map-based web app that answers questions about any place, with the source and date shown next to every answer.",
+    overview:
+      "maNOWj GeoIntel is an independent product I design and build. You pick a place on the map and ask about it: what's nearby, how to get there, what the weather and air are like, how many people live there. Every answer shows where it came from and how recent it is. If a source has no figure, the app says so instead of guessing.",
+    purpose:
+      "Information about places is spread across many open data sources and is often shown without context. GeoIntel brings those sources together in one place and shows where each answer comes from, so people can trust what they see and decide for themselves.",
+    dev_status: "live",
+    features: [
+      "Counts of hospitals, schools, shops, ATMs and other places within a chosen radius",
+      "Directions with live turn-by-turn navigation",
+      "Weather, air quality and rain radar",
+      "Population, area and density, with the census year shown",
+      "Satellite view or 3D buildings, with the imagery date shown",
+      "Distance and area measurement",
+      "maNOWj Daily, a daily game of guessing locations from satellite views",
+    ],
+    technologies: ["Next.js", "Vercel", "OpenStreetMap", "Overpass", "Nominatim", "OSRM", "Open-Meteo", "Wikidata"],
+    roadmap: [],
+    live_url: "https://www.manowj.com/",
+    repo_url: "https://github.com/ManojGudla",
+    cover_media_id: null,
+    is_featured: true,
+    sort_order: 10,
+    status: "published",
+  },
+];
 
 export const seedProjectImages: ProjectImage[] = [];
 
@@ -275,7 +306,7 @@ export const seedAchievements: Achievement[] = [
     title: "Independent Technology Initiative",
     focus: "Product building, innovation and entrepreneurial exploration.",
     description:
-      "Designing and building independent products — from first idea to launch.",
+      "Designing and building independent products, from first idea to launch.",
     issuer: "",
     date_label: "",
     link_url: "",
@@ -303,11 +334,11 @@ export const seedAchievements: Achievement[] = [
 export const seedGallery: GalleryItem[] = [];
 
 export const seedInterests: Interest[] = [
-  ["Technology exploration", "Trying new tools, devices and platforms early — and figuring out what they're actually good for."],
+  ["Technology exploration", "Trying new tools, devices and platforms early and figuring out what they're actually good for."],
   ["AI experimentation", "Testing emerging AI tools hands-on, building small experiments and learning what works in practice."],
   ["Content creation", "Turning ideas into YouTube videos and Instagram reels that make technology approachable."],
   ["Entrepreneurship", "Exploring business ideas, building products and learning how good ideas become real ventures."],
-  ["Networking", "Meeting builders, creators and professionals — and learning from how they think."],
+  ["Networking", "Meeting builders, creators and professionals and learning from how they think."],
   ["Learning & experimentation", "Picking up new skills by doing: small projects, quick prototypes and plenty of iteration."],
 ].map(([title, description], i) => ({
   id: id(8, i + 1),
@@ -320,7 +351,7 @@ export const seedInterests: Interest[] = [
 
 export const seedVision: VisionItem[] = (
   [
-    ["technologies", "AI & machine learning", "Going deeper into AI and ML — from emerging tools to the fundamentals behind them.", "Now"],
+    ["technologies", "AI & machine learning", "Going deeper into AI and ML, from emerging tools to the fundamentals behind them.", "Now"],
     ["products", "Build useful AI-powered tools", "Turning ideas into simple products that solve everyday problems.", "Next"],
     ["business", "Digital services for businesses", "Helping businesses use technology and digital media to reach more people.", "Next"],
     ["skills", "Data analytics & full-stack building", "Sharpening analytics, Power BI and modern web development skills.", "Ongoing"],

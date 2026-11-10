@@ -142,7 +142,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               <section className="detail-block" aria-labelledby="rm-h">
                 <h2 id="rm-h">What&apos;s next</h2>
                 <p className="goal-note" style={{ marginBottom: "1rem" }}>
-                  Planned work — not yet released.
+                  Planned work, not released yet.
                 </p>
                 <ul className="ticks">
                   {project.roadmap.map((r) => (

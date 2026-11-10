@@ -14,7 +14,7 @@ const PATHS: { test: RegExp; d: string }[] = [
   { test: /music|sound/i, d: "M9 18V6l10-2v12M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM19 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" },
   { test: /read|book|writ/i, d: "M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z" },
 ];
-const FALLBACK = "M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z";
+const FALLBACK = "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z";
 
 export function TopicIcon({ topic }: { topic: string }) {
   const d = PATHS.find((p) => p.test.test(topic))?.d ?? FALLBACK;

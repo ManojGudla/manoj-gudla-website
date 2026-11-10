@@ -8,7 +8,7 @@ import { formatDate, platformLabel } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Free resources",
-  description: "Free tools, courses and links for learning technology, AI, coding and content creation — plus the resources from every video.",
+  description: "Free tools, courses and links for learning technology, AI, coding and content creation, plus the resources from every video.",
   alternates: { canonical: "/resources" },
   openGraph: { url: "/resources", title: "Free resources" },
 };

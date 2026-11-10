@@ -35,10 +35,11 @@ export function PageHero({
 }
 
 export function Kicker({ path }: { path: string }) {
+  const label = path.replace(/-/g, " ");
   return (
     <p className="kicker" data-reveal>
-      <span className="kicker__dot" aria-hidden />
-      <span className="kicker__path">~/{path}</span>
+      <span className="kicker__bar" aria-hidden />
+      <span className="kicker__path">{label.charAt(0).toUpperCase() + label.slice(1)}</span>
     </p>
   );
 }
@@ -101,11 +102,13 @@ export function StatusChip({ status }: { status: Project["dev_status"] }) {
 export function FeatureProject({ project, content }: { project: Project; content: SiteContent }) {
   const cover = resolveMediaFrom(content, project.cover_media_id);
   return (
-    <Link href={`/projects/${project.slug}`} className={`feature ${cover ? "" : "feature--text"}`} data-tilt>
-      {cover && (
+    <Link href={`/projects/${project.slug}`} className="feature" data-tilt>
+      {cover ? (
         <div className="feature__media">
           <Photo media={cover} label="Project screenshot" sizes="(min-width: 900px) 55vw, 100vw" />
         </div>
+      ) : (
+        <ProjectWindow project={project} />
       )}
       <div className="feature__body">
         <StatusChip status={project.dev_status} /> <DraftFlag status={project.status} />
@@ -123,6 +126,37 @@ export function FeatureProject({ project, content }: { project: Project; content
         <span className="feature__more">Read the project story</span>
       </div>
     </Link>
+  );
+}
+
+/**
+ * Stand-in visual until a screenshot is uploaded (Dashboard → Projects → Cover):
+ * a browser window with the site's address and its first features.
+ */
+function ProjectWindow({ project }: { project: Project }) {
+  let host = "";
+  try {
+    host = project.live_url ? new URL(project.live_url).host.replace(/^www\./, "") : "";
+  } catch {
+    host = "";
+  }
+  return (
+    <div className="pwin" aria-hidden>
+      <div className="pwin__bar">
+        <span />
+        <span />
+        <span />
+        {host && <span className="pwin__url">{host}</span>}
+      </div>
+      <div className="pwin__body">
+        <span className="pwin__title">{project.title}</span>
+        <ul role="list">
+          {project.features.slice(0, 4).map((f) => (
+            <li key={f}>{f}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 

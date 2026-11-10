@@ -8,7 +8,7 @@ import { turnstileSiteKey } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: "Contact & collaborations",
-  description: "Career opportunities, partnerships, brand collaborations, projects or just a conversation — get in touch with Manoj Kumar Gudla.",
+  description: "Career opportunities, partnerships, brand collaborations, projects or just a conversation. Get in touch with Manoj Kumar Gudla.",
   alternates: { canonical: "/contact" },
   openGraph: { url: "/contact" },
 };
@@ -24,7 +24,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
       <Kicker path="contact" />
       <h1 data-reveal>Let&apos;s connect.</h1>
       <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms" }}>
-        Roles, partnerships, brand collaborations, project ideas — or simply a good conversation. Tell me what you have in mind.
+        Roles, partnerships, brand collaborations, project ideas, or simply a good conversation. Tell me what you have in mind.
       </p>
     </PageHero>
     <section className="container section">

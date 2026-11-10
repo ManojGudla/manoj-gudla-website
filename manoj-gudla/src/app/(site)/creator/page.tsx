@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ContentCard, Kicker, PageHero, SplitTitle, StatList } from "@/components/site/blocks";
+import { DEFAULT_CREATOR_PHOTO } from "@/content/defaults";
 import { TopicIcon } from "@/components/site/TopicIcon";
 import { Photo } from "@/components/site/Photo";
 import { resolveMediaFrom } from "@/components/site/resolve";
@@ -12,7 +13,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Creator hub",
-  description: "Videos, reels and brand collaborations — technology, AI and lifestyle content by Manoj Kumar Gudla.",
+  description: "Videos, reels and brand collaborations: technology, AI and lifestyle content by Manoj Kumar Gudla.",
   alternates: { canonical: "/creator" },
   openGraph: { url: "/creator" },
 };
@@ -62,7 +63,7 @@ function Showcase({ title, id, items, content, emptyText, href, cta }: {
 export default async function CreatorPage() {
   const content = await getSiteContent();
   const { profile, creatorContent, creatorStats } = content;
-  const photo = resolveMediaFrom(content, profile.creator_photo_media_id);
+  const photo = resolveMediaFrom(content, profile.creator_photo_media_id) ?? DEFAULT_CREATOR_PHOTO;
   const featured = creatorContent.filter((c) => c.is_featured);
   const youtube = creatorContent.filter((c) => c.platform === "youtube");
   const instagram = creatorContent.filter((c) => c.platform === "instagram");
@@ -76,28 +77,8 @@ export default async function CreatorPage() {
           <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms", maxWidth: "44ch" }}>
             {profile.creator_intro}
           </p>
-          {photo && (
-            <div className="section-foot">
-            {profile.youtube_url && (
-              <a className="btn" href={profile.youtube_url} target="_blank" rel="me noopener noreferrer">
-                <YouTubeIcon /> Subscribe on YouTube
-              </a>
-            )}
-            {profile.instagram_url && (
-              <a className="btn btn--ghost" href={profile.instagram_url} target="_blank" rel="me noopener noreferrer">
-                <InstagramIcon /> Follow on Instagram
-              </a>
-            )}
-          </div>
-          )}
-        </div>
-        {photo ? (
-          <div className="page-intro__media framed" data-reveal>
-            <Photo media={photo} label="Creator photograph" priority sizes="(min-width: 900px) 360px, 90vw" />
-          </div>
-        ) : (
-          (profile.youtube_url || profile.instagram_url) && (
-            <ul className="platforms" role="list" data-reveal style={{ ["--rd" as string]: "200ms" }}>
+          {(profile.youtube_url || profile.instagram_url) && (
+            <ul className="platforms platforms--row" role="list" data-reveal style={{ ["--rd" as string]: "200ms" }}>
               {profile.youtube_url && (
                 <li>
                   <a className="platform platform--yt" href={profile.youtube_url} target="_blank" rel="me noopener noreferrer">
@@ -123,8 +104,11 @@ export default async function CreatorPage() {
                 </li>
               )}
             </ul>
-          )
-        )}
+          )}
+        </div>
+        <div className="page-intro__media framed" data-reveal>
+          <Photo media={photo} label="Creator photograph" priority sizes="(min-width: 900px) 360px, 90vw" />
+        </div>
       </PageHero>
 
       {creatorStats.length > 0 && (
@@ -194,7 +178,7 @@ export default async function CreatorPage() {
             </div>
             <p className="prose">
               Working with a brand works best when the fit is real. Here&apos;s what to expect, and what helps me say yes
-              quickly. Ask for current audience figures and recent examples — I&apos;ll share them with dates.
+              quickly. Ask for current audience figures and recent examples and I&apos;ll share them with dates.
             </p>
           </div>
           <div className="kit kit--steps">
@@ -217,7 +201,7 @@ export default async function CreatorPage() {
       <section className="section section--stage stage" data-stage aria-labelledby="collab-h">
         <div className="stage-glow" aria-hidden />
         <div className="container cta">
-          <h2 id="collab-h">Let&apos;s create something your audience will remember.</h2>
+          <h2 id="collab-h">Got a product my audience would find useful? Let&apos;s talk.</h2>
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
             <Link href="/contact?topic=brand" className="btn btn--accent">
               Propose a collaboration

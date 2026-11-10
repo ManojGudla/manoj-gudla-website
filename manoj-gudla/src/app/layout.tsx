@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(siteUrl),
-    title: { default: title, template: `%s — ${s?.site_title || name}` },
+    title: { default: title, template: `%s | ${s?.site_title || name}` },
     description,
     applicationName: s?.site_title || name,
     authors: [{ name }],

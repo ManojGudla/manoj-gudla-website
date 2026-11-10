@@ -83,19 +83,24 @@ def main():
             assert "YouTube subscribers" not in page.locator("main").inner_text(), "draft creator stats leaked"
         check("Draft content is not shown publicly", no_drafts_public)
 
-        def gis_absent():
-            for path in ["/", "/journey", "/about", "/achievements", "/vision", "/resources", "/creator"]:
+        def content_rules():
+            for path in ["/", "/journey", "/about", "/achievements", "/vision", "/resources", "/creator", "/beyond", "/contact", "/projects"]:
                 page.goto(BASE + path)
                 body = page.locator("body").inner_text()
                 assert "GIS" not in body, path
-                assert "GeoIntel" not in body, f"GeoIntel on {path}"
+                assert "Aditya" not in body, f"BCA entry on {path}"
+                assert "\u2014" not in body, f"long dash on {path}"
+            page.goto(BASE + "/")
+            expect(page.locator("#proj-h")).to_be_visible()
+            expect(page.locator(".home-project .feature__title")).to_have_text("maNOWj GeoIntel")
             r = page.goto(BASE + "/projects/manowj-geointel")
-            assert r.status == 404, r.status
-            r = page.goto(BASE + "/projects")
-            assert r.status == 404, f"empty Projects page should be hidden ({r.status})"
+            assert r.status == 200, r.status
+            expect(page.locator("h1")).to_contain_text("maNOWj GeoIntel")
             r = page.goto(BASE + "/work-with-me")
             assert r.status == 404, f"Work with me should be hidden until a service is published ({r.status})"
-        check("No GIS or GeoIntel anywhere; empty pages stay hidden", gis_absent)
+            page.goto(BASE + "/beyond")
+            assert page.locator(".gallery figure").count() == 3, "built-in gallery photos missing"
+        check("GeoIntel shown as a project; no GIS, BCA or long dashes; Work with me hidden", content_rules)
 
         def unknown_404():
             r = page.goto(f"{BASE}/projects/does-not-exist")
@@ -114,7 +119,7 @@ def main():
             ld = json.loads(page.locator('script[type="application/ld+json"]').first.inner_text())
             assert ld["@type"] == "Person" and ld["name"] == "Manoj Kumar Gudla"
             sm = urllib.request.urlopen(BASE + "/sitemap.xml").read().decode()
-            assert "/resources" in sm and BASE in sm and "/projects" not in sm
+            assert "/resources" in sm and BASE in sm and "/projects/manowj-geointel" in sm
             rb = urllib.request.urlopen(BASE + "/robots.txt").read().decode()
             assert "Disallow: /admin" in rb
             og_img = urllib.request.urlopen(BASE + "/opengraph-image")

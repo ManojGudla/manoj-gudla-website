@@ -39,7 +39,7 @@ end $$;
 
 -- ---------------------------------------------------------------- anon
 select pg_temp.as_role('anon');
-select pg_temp.check((select count(*) from projects) = 1, 'anon sees only the published project');
+select pg_temp.check((select count(*) from projects) = 2, 'anon sees only the published projects (test one + maNOWj GeoIntel)');
 select pg_temp.check((select count(*) from projects where slug = 'secret-draft') = 0, 'anon cannot see draft project');
 select pg_temp.check((select count(*) from project_images) = 0, 'anon cannot see images of a draft project');
 select pg_temp.check((select count(*) from creator_stats) = 0, 'anon cannot see draft creator stats');
@@ -93,7 +93,7 @@ exception when insufficient_privilege then raise notice 'pass: non-admin cannot 
 end $$;
 delete from projects;
 select pg_temp.as_role('postgres');
-select pg_temp.check((select count(*) from projects) = 2, 'non-admin delete has no effect');
+select pg_temp.check((select count(*) from projects) = 3, 'non-admin delete has no effect');
 
 -- ----------------------------------------------- service role (server)
 select pg_temp.as_role('service_role');
@@ -126,7 +126,7 @@ end $$;
 select pg_temp.as_role('authenticated', '11111111-1111-4111-8111-111111111111');
 select pg_temp.check(is_admin(), 'admin recognised');
 select pg_temp.check((select count(*) from creator_stats) = 3, 'admin sees draft stats');
-select pg_temp.check((select count(*) from projects) = 2, 'admin sees draft projects');
+select pg_temp.check((select count(*) from projects) = 3, 'admin sees draft projects');
 select pg_temp.check((select count(*) from project_images) = 1, 'admin sees draft project images');
 select pg_temp.check((select count(*) from enquiries) = 5, 'admin reads enquiries');
 
@@ -135,7 +135,7 @@ update enquiries set status = 'read' where full_name = 'Visitor 1';
 select pg_temp.check((select status from enquiries where full_name = 'Visitor 1') = 'read', 'admin updates enquiry status');
 
 insert into projects (slug, title, status) values ('new-thing', 'New thing', 'published');
-select pg_temp.check((select count(*) from projects) = 3, 'admin creates project');
+select pg_temp.check((select count(*) from projects) = 4, 'admin creates project');
 
 do $$ begin
   update projects set live_url = 'http://insecure.example' where slug = 'new-thing';
@@ -186,7 +186,8 @@ select pg_temp.check((select count(*) from storage.objects where bucket_id = 'me
 
 -- ---------------------------------------------- resources, packs, services
 select pg_temp.as_role('postgres');
-select pg_temp.check((select count(*) from projects where slug = 'manowj-geointel') = 0, 'maNOWj GeoIntel is not in this website');
+select pg_temp.check((select count(*) from projects where slug = 'manowj-geointel' and status = 'published') = 1, 'maNOWj GeoIntel is a published project');
+select pg_temp.check((select count(*) from education where institution ilike '%Aditya%') = 0, 'no BCA entry');
 select pg_temp.check((select count(*) from vision_items where title ilike '%GeoIntel%') = 0, 'no GeoIntel vision goal');
 select pg_temp.check((select count(*) from achievements where description ilike '%GeoIntel%') = 0, 'no GeoIntel in achievements');
 

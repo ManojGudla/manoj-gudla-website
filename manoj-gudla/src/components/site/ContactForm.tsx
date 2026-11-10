@@ -63,7 +63,7 @@ export function ContactForm({ initialTopic, turnstileSiteKey, email }: { initial
         window.turnstile?.reset();
       }
     } catch {
-      setState({ kind: "error", message: "Your message was not sent — the connection failed. Check your internet and try again." });
+      setState({ kind: "error", message: "Your message was not sent because the connection failed. Check your internet and try again." });
     }
   }
 
@@ -71,7 +71,7 @@ export function ContactForm({ initialTopic, turnstileSiteKey, email }: { initial
     return (
       <div ref={statusRef} tabIndex={-1} className="notice notice--success" role="status" style={{ padding: "1.5rem" }}>
         <p style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", color: "var(--ink)", marginBottom: "0.5rem" }}>
-          Thank you — your message has been received.
+          Thank you, your message has been received.
         </p>
         <p style={{ color: "var(--ink-2)" }}>I read every message and will reply to the email address you gave.</p>
         <button type="button" className="btn btn--ghost btn--sm" style={{ marginTop: "1rem" }} onClick={() => setState({ kind: "idle" })}>

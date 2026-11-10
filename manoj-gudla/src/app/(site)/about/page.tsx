@@ -4,7 +4,7 @@ import { Kicker, PageHero } from "@/components/site/blocks";
 import { Photo } from "@/components/site/Photo";
 import { TopicIcon } from "@/components/site/TopicIcon";
 import { resolveMediaFrom } from "@/components/site/resolve";
-import { DEFAULT_PORTRAIT } from "@/content/defaults";
+import { DEFAULT_ABOUT_PHOTO } from "@/content/defaults";
 import { getSiteContent } from "@/lib/data/content";
 import { paragraphs } from "@/lib/format";
 
@@ -25,7 +25,7 @@ export default async function AboutPage() {
   const { profile, interests } = content;
   const lines = paragraphs(profile.biography);
   const [opening, ...restLines] = lines;
-  const photo = resolveMediaFrom(content, profile.about_photo_media_id ?? profile.photo_media_id) ?? DEFAULT_PORTRAIT;
+  const photo = resolveMediaFrom(content, profile.about_photo_media_id ?? profile.photo_media_id) ?? DEFAULT_ABOUT_PHOTO;
   const first = profile.full_name.split(" ")[0];
 
   return (

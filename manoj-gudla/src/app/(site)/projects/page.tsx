@@ -26,7 +26,7 @@ export default async function ProjectsPage() {
         path="projects"
         mark="Build"
         title="Projects & innovation"
-        lead="Products and ideas I design, build and keep improving — independently, end to end."
+        lead="Products and ideas I design, build and keep improving on my own, end to end."
       />
       <section className="section" style={{ paddingTop: 0 }} aria-label="Projects">
         <div className="container" style={{ display: "grid", gap: "3rem" }}>

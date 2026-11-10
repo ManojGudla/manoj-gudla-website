@@ -21,7 +21,7 @@ export function CopyLink({ path, title }: { path: string; title: string }) {
   }
   return (
     <button type="button" className="btn btn--ghost btn--sm" onClick={share}>
-      <span aria-live="polite">{done === "copied" ? "Link copied" : done === "failed" ? "Copy failed — use the address bar" : "Share this page"}</span>
+      <span aria-live="polite">{done === "copied" ? "Link copied" : done === "failed" ? "Copy failed. Use the address bar" : "Share this page"}</span>
     </button>
   );
 }

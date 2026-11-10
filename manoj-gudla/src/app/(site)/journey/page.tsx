@@ -13,7 +13,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Professional journey",
-  description: "Experience, education, skills, certifications and career direction — with résumé download.",
+  description: "Experience, education, skills, certifications and career direction, with a résumé download.",
   alternates: { canonical: "/journey" },
   openGraph: { url: "/journey" },
 };

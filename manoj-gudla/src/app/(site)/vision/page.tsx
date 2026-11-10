@@ -27,7 +27,7 @@ export default async function VisionPage() {
         lead="Build a recognisable personal brand that connects technology, innovation, creativity, business and entrepreneurship."
       >
         <p className="goal-note" style={{ marginTop: "1.75rem" }}>
-          Everything on this page is a goal or a plan — not a finished achievement.
+          Everything on this page is a goal or a plan, not a finished achievement.
         </p>
       </PageIntro>
 

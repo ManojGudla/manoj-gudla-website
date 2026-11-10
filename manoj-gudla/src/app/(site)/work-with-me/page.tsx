@@ -10,7 +10,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Work with me",
-  description: "Brand collaborations and digital services — what I offer and how to start.",
+  description: "Brand collaborations and digital services: what I offer and how to start.",
   alternates: { canonical: "/work-with-me" },
   openGraph: { url: "/work-with-me" },
 };

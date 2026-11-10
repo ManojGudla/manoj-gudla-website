@@ -48,7 +48,7 @@ export function Header({ name, nav }: { name: string; nav: NavItem[] }) {
   return (
     <header className="site-header" data-scrolled={scrolled}>
       <div className="container site-header__inner">
-        <Link href="/" className="wordmark" aria-label={`${name} — home`}>
+        <Link href="/" className="wordmark" aria-label={`${name}, home`}>
           {first} {rest.join(" ")}
           <span aria-hidden>.</span>
         </Link>

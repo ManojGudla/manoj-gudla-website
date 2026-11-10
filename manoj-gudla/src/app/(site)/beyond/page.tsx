@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { DraftFlag, PageIntro } from "@/components/site/blocks";
+import { DEFAULT_GALLERY } from "@/content/defaults";
 import { TopicIcon } from "@/components/site/TopicIcon";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { getSiteContent } from "@/lib/data/content";
@@ -9,7 +10,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Beyond work",
-  description: "Interests, experiments and everyday life — the human side of Manoj Kumar Gudla.",
+  description: "Interests, experiments and everyday life: the human side of Manoj Kumar Gudla.",
   alternates: { canonical: "/beyond" },
   openGraph: { url: "/beyond" },
 };
@@ -20,6 +21,7 @@ export default async function BeyondPage() {
   const photos = gallery
     .map((g) => ({ ...g, media: resolveMediaFrom(content, g.media_id) }))
     .filter((g) => g.media);
+  const shown = photos.length > 0 ? photos : DEFAULT_GALLERY.map((g) => ({ ...g, status: "published" as const }));
 
   return (
     <>
@@ -27,7 +29,7 @@ export default async function BeyondPage() {
         path="beyond-work"
         mark="Curious"
         title="Beyond work"
-        lead="The things I do when nobody's asking — exploring, experimenting, creating and meeting people."
+        lead="The things I do when nobody's asking: exploring, experimenting, creating and meeting people."
       />
 
       {interests.length > 0 && (
@@ -53,14 +55,14 @@ export default async function BeyondPage() {
         </section>
       )}
 
-      {photos.length > 0 && (
+      {shown.length > 0 && (
         <section className="section section--band" aria-labelledby="gal-h">
           <div className="container">
             <h2 className="section-title" id="gal-h" data-reveal style={{ marginBottom: "2.5rem" }}>
               Moments
             </h2>
             <div className="gallery">
-              {photos.map((g) => (
+              {shown.map((g) => (
                 <figure key={g.id}>
                   <div className="frame frame--zoom">
                     <Image

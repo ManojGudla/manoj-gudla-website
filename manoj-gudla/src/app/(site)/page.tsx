@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FeatureProject } from "@/components/site/blocks";
 import { CommandTrigger } from "@/components/site/CommandMenu";
 import { HeroFx } from "@/components/site/HeroFx";
 import { HeroScene } from "@/components/site/HeroScene";
@@ -29,6 +30,7 @@ function Letters({ text, offset = 0 }: { text: string; offset?: number }) {
 export default async function HomePage() {
   const content = await getSiteContent();
   const { profile, experience, education, creatorContent, creatorStats, certifications, resources, packs, services } = content;
+  const featuredProject = content.projects.find((p) => p.is_featured) ?? content.projects[0];
 
   const nameParts = profile.full_name.trim().split(/\s+/);
   const first = nameParts[0];
@@ -341,6 +343,22 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {featuredProject && (
+        <section className="section home-project" style={{ paddingTop: 0 }} aria-labelledby="proj-h">
+          <div className="container">
+            <div className="home-project__head">
+              <h2 className="section-title" id="proj-h" data-reveal>
+                Something I built
+              </h2>
+              <Link href="/projects" className="tile__link">
+                All projects
+              </Link>
+            </div>
+            <FeatureProject project={featuredProject} content={content} />
+          </div>
+        </section>
+      )}
     </>
   );
 }

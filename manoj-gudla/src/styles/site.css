@@ -2098,7 +2098,7 @@ html.js [data-reveal].is-in {
 }
 
 .marquee li::after {
-  content: "✦";
+  content: "/";
   margin-inline: 1.6rem;
   font-size: 0.7em;
   color: var(--accent);
@@ -2437,4 +2437,125 @@ main {
 
 .pagehero + .container {
   padding-top: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+/* Platform cards side by side under the creator intro */
+.platforms--row {
+  max-width: none;
+  justify-self: start;
+  margin-top: 2rem;
+}
+
+@media (min-width: 560px) {
+  .platforms--row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Content right after a dark page hero always gets breathing room */
+.pagehero + .section {
+  padding-top: clamp(3rem, 7vw, 5rem) !important;
+}
+
+/* Project stand-in visual: a small browser window */
+.pwin {
+  overflow: hidden;
+  border: 1px solid #262833;
+  border-radius: var(--r-panel);
+  background: #0c0d12;
+  color: #eceef6;
+  box-shadow: 0 30px 70px -40px rgb(0 0 0 / 0.6);
+}
+
+.pwin__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid #262833;
+  background: #14151c;
+}
+
+.pwin__bar > span:not(.pwin__url) {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #333645;
+}
+
+.pwin__url {
+  margin-inline: auto;
+  padding: 0.2rem 1.2rem;
+  border-radius: 999px;
+  background: #0c0d12;
+  font-size: 0.75rem;
+  color: #a3a8bb;
+}
+
+.pwin__body {
+  position: relative;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  min-height: 15rem;
+  background-image:
+    radial-gradient(60% 80% at 85% 20%, rgb(139 149 255 / 0.22), transparent 70%),
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size:
+    auto,
+    32px 32px,
+    32px 32px;
+}
+
+.pwin__title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.pwin__body ul {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.pwin__body li {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #262833;
+  border-radius: 10px;
+  background: rgb(12 13 18 / 0.75);
+  font-size: 0.85rem;
+  color: #c9cddb;
+}
+
+.home-project__head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Kicker: a plain label with a short accent bar */
+.kicker {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  gap: 0.75rem;
+}
+
+.kicker__bar {
+  width: 1.75rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
 }
