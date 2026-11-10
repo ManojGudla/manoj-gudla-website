@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DraftFlag, Kicker, PageHero, ProjectWindow, StatusChip } from "@/components/site/blocks";
-import { Photo } from "@/components/site/Photo";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { ExternalIcon, GitHubIcon } from "@/components/ui/icons";
+import { Photo } from "@/components/site/Photo";
+import { DEFAULT_PROJECT_COVERS } from "@/content/defaults";
 import { getSiteContent } from "@/lib/data/content";
 import { paragraphs } from "@/lib/format";
 
@@ -41,7 +42,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const project = content.projects.find((p) => p.slug === slug);
   if (!project) notFound();
 
-  const cover = resolveMediaFrom(content, project.cover_media_id);
+  const cover = resolveMediaFrom(content, project.cover_media_id) ?? DEFAULT_PROJECT_COVERS[project.slug] ?? null;
   const shots = content.projectImages
     .filter((i) => i.project_id === project.id)
     .map((i) => ({ ...i, media: resolveMediaFrom(content, i.media_id) }))
@@ -85,11 +86,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
           <div className="detail-visual" data-reveal style={{ ["--rd" as string]: "200ms" }}>
-            {cover ? (
-              <Photo media={cover} label="Project cover screenshot" priority sizes="(min-width: 900px) 560px, 100vw" />
-            ) : (
-              <ProjectWindow project={project} />
-            )}
+            <ProjectWindow project={project} cover={cover} priority />
           </div>
         </PageHero>
 

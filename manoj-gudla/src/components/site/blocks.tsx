@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Photo } from "@/components/site/Photo";
+import { DEFAULT_PROJECT_COVERS } from "@/content/defaults";
 import { PlayIcon } from "@/components/ui/icons";
 import { devStatusLabel, platformLabel, statValue, formatDate, youtubeId } from "@/lib/format";
 import type { Achievement, CreatorContent, CreatorStat, Project, ResolvedMedia, SiteContent, VisionItem } from "@/lib/types";
@@ -117,16 +118,10 @@ export function StatusChip({ status }: { status: Project["dev_status"] }) {
 }
 
 export function FeatureProject({ project, content }: { project: Project; content: SiteContent }) {
-  const cover = resolveMediaFrom(content, project.cover_media_id);
+  const cover = resolveMediaFrom(content, project.cover_media_id) ?? DEFAULT_PROJECT_COVERS[project.slug] ?? null;
   return (
     <Link href={`/projects/${project.slug}`} className="feature" data-tilt>
-      {cover ? (
-        <div className="feature__media">
-          <Photo media={cover} label="Project screenshot" sizes="(min-width: 900px) 55vw, 100vw" />
-        </div>
-      ) : (
-        <ProjectWindow project={project} />
-      )}
+      <ProjectWindow project={project} cover={cover} />
       <div className="feature__body">
         <StatusChip status={project.dev_status} /> <DraftFlag status={project.status} />
         <h3 className="feature__title">{project.title}</h3>
@@ -150,7 +145,7 @@ export function FeatureProject({ project, content }: { project: Project; content
  * Stand-in visual until a screenshot is uploaded (Dashboard → Projects → Cover):
  * a browser window with the site's address and its first features.
  */
-export function ProjectWindow({ project }: { project: Project }) {
+export function ProjectWindow({ project, cover, priority = false }: { project: Project; cover?: ResolvedMedia | null; priority?: boolean }) {
   let host = "";
   try {
     host = project.live_url ? new URL(project.live_url).host.replace(/^www\./, "") : "";
@@ -158,27 +153,33 @@ export function ProjectWindow({ project }: { project: Project }) {
     host = "";
   }
   return (
-    <div className="pwin" aria-hidden>
-      <div className="pwin__bar">
+    <div className="pwin">
+      <div className="pwin__bar" aria-hidden>
         <span />
         <span />
         <span />
         {host && <span className="pwin__url">{host}</span>}
       </div>
-      <div className="pwin__body">
-        <span className="pwin__title">{project.title}</span>
-        <ul role="list">
-          {project.features.slice(0, 4).map((f) => (
-            <li key={f}>{f}</li>
-          ))}
-        </ul>
-      </div>
+      {cover ? (
+        <div className="pwin__shot">
+          <Photo media={cover} label={`${project.title} screenshot`} priority={priority} sizes="(min-width: 900px) 640px, 100vw" />
+        </div>
+      ) : (
+        <div className="pwin__body" aria-hidden>
+          <span className="pwin__title">{project.title}</span>
+          <ul role="list">
+            {project.features.slice(0, 4).map((f) => (
+              <li key={f}>{f}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
 
 export function ProjectCard({ project, content }: { project: Project; content: SiteContent }) {
-  const cover = resolveMediaFrom(content, project.cover_media_id);
+  const cover = resolveMediaFrom(content, project.cover_media_id) ?? DEFAULT_PROJECT_COVERS[project.slug] ?? null;
   return (
     <Link href={`/projects/${project.slug}`} className="project-card" data-tilt>
       {cover && <Photo media={cover} label="Project screenshot" sizes="(min-width: 760px) 50vw, 100vw" />}

@@ -59,3 +59,15 @@ export const DEFAULT_JOURNEY_PHOTO: ResolvedMedia = {
   height: 1200,
   mime: "image/jpeg",
 };
+
+/** Built-in project screenshots, used until a cover is uploaded in Dashboard → Projects. */
+export const DEFAULT_PROJECT_COVERS: Record<string, ResolvedMedia> = {
+  "manowj-geointel": {
+    id: "default-geointel",
+    url: "/images/geointel-screen.webp",
+    alt: "maNOWj GeoIntel: a map of Hyderabad with the search bar, quick actions and the map layers panel",
+    width: 2640,
+    height: 1239,
+    mime: "image/webp",
+  },
+};
