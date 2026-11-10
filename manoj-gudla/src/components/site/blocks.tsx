@@ -51,6 +51,7 @@ export function PageIntro({
   path,
   mark,
   after,
+  media,
 }: {
   title: string;
   lead?: string;
@@ -58,9 +59,10 @@ export function PageIntro({
   path?: string;
   mark?: string;
   after?: React.ReactNode;
+  media?: ResolvedMedia | null;
 }) {
-  return (
-    <PageHero mark={mark} after={after}>
+  const text = (
+    <>
       {path && <Kicker path={path} />}
       <h1 data-reveal>{title}</h1>
       {lead && (
@@ -69,6 +71,21 @@ export function PageIntro({
         </p>
       )}
       {children}
+    </>
+  );
+  if (!media) {
+    return (
+      <PageHero mark={mark} after={after}>
+        {text}
+      </PageHero>
+    );
+  }
+  return (
+    <PageHero mark={mark} after={after} className="page-intro--split">
+      <div>{text}</div>
+      <div className="page-intro__media framed" data-reveal>
+        <Photo media={media} label={title} priority sizes="(min-width: 900px) 360px, 90vw" />
+      </div>
     </PageHero>
   );
 }

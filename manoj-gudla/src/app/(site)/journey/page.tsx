@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DraftFlag, PageIntro } from "@/components/site/blocks";
+import { DEFAULT_JOURNEY_PHOTO } from "@/content/defaults";
 import { Marquee } from "@/components/site/Marquee";
 import { TopicIcon } from "@/components/site/TopicIcon";
 import { resolveMediaFrom } from "@/components/site/resolve";
@@ -46,6 +47,7 @@ export default async function JourneyPage() {
         title="Professional journey"
         lead={profile.professional_intro}
         after={<Marquee items={skills.map((s) => s.name)} />}
+        media={DEFAULT_JOURNEY_PHOTO}
       >
         <div className="section-foot" style={{ marginTop: "2rem" }}>
           {resume ? (

@@ -50,3 +50,12 @@ export const DEFAULT_GALLERY: { id: string; caption: string; media: ResolvedMedi
     media: { id: "moment-3", url: "/images/moments-3.jpg", alt: "Manoj on his motorcycle at night, looking to the side", width: 960, height: 1200, mime: "image/jpeg" },
   },
 ];
+
+export const DEFAULT_JOURNEY_PHOTO: ResolvedMedia = {
+  id: "default-journey",
+  url: "/images/manoj-work.jpg",
+  alt: "Manoj Kumar Gudla at his desk with a laptop in the office",
+  width: 960,
+  height: 1200,
+  mime: "image/jpeg",
+};
