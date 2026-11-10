@@ -2,6 +2,7 @@ import { CommandMenu, type CommandItem } from "@/components/site/CommandMenu";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { Motion } from "@/components/site/Motion";
+import { StageGlow } from "@/components/site/StageGlow";
 import { PreviewBar } from "@/components/site/PreviewBar";
 import { CONTACT, MORE, mainNav } from "@/components/site/nav";
 import { getSiteContent } from "@/lib/data/content";
@@ -66,6 +67,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Footer profile={profile} settings={settings} nav={nav} />
       <CommandMenu items={commands} />
       <Motion />
+      <StageGlow />
     </>
   );
 }

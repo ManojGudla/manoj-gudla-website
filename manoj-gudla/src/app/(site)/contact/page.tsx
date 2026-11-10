@@ -1,3 +1,4 @@
+import { Kicker, PageHero } from "@/components/site/blocks";
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/site/ContactForm";
 import { CopyText } from "@/components/site/CopyText";
@@ -18,15 +19,19 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const email = settings.contact_email || profile.email;
 
   return (
-    <section className="container page-intro">
+    <>
+    <PageHero mark="Say hi">
+      <Kicker path="contact" />
+      <h1 data-reveal>Let&apos;s connect.</h1>
+      <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms" }}>
+        Roles, partnerships, brand collaborations, project ideas — or simply a good conversation. Tell me what you have in mind.
+      </p>
+    </PageHero>
+    <section className="container section">
       <div className="contact-grid">
         <div>
-          <h1 data-reveal>Let&apos;s connect.</h1>
-          <p className="lead" style={{ marginTop: "1.5rem" }}>
-            Roles, partnerships, brand collaborations, project ideas — or simply a good conversation. Tell me what you have in mind.
-          </p>
           {email && (
-            <div style={{ marginTop: "2.5rem" }}>
+            <div>
               <p className="meta" style={{ marginBottom: "0.5rem" }}>
                 Prefer email?
               </p>
@@ -52,5 +57,6 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         </div>
       </div>
     </section>
+    </>
   );
 }

@@ -24,8 +24,7 @@ insert into public.experience (id, organisation, role_title, employment_type, lo
 on conflict do nothing;
 
 insert into public.education (id, qualification, field, institution, start_label, end_label, progress, notes, sort_order, status) values
-  ('00000000-0000-4000-8002-000000000001', 'Master of Computer Applications (MCA)', 'Data Science', 'Vignan University', '', '', 'completed', '', 10, 'published'),
-  ('00000000-0000-4000-8002-000000000002', 'Bachelor of Computer Applications (BCA)', '', 'Aditya Degree College, Srikakulam', '', '2024', 'completed', '', 20, 'published')
+  ('00000000-0000-4000-8002-000000000001', 'Master of Computer Applications (MCA)', 'Data Science', 'Vignan University', '', '', 'completed', '', 10, 'published')
 on conflict do nothing;
 
 insert into public.skills (id, name, category, proficiency, proficiency_approved, sort_order, status) values

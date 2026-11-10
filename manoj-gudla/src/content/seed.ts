@@ -160,19 +160,6 @@ export const seedEducation: Education[] = [
     sort_order: 10,
     status: "published",
   },
-  {
-    id: id(2, 2),
-    ...ts,
-    qualification: "Bachelor of Computer Applications (BCA)",
-    field: "",
-    institution: "Aditya Degree College, Srikakulam",
-    start_label: "",
-    end_label: "2024",
-    progress: "completed",
-    notes: "",
-    sort_order: 20,
-    status: "published",
-  },
 ];
 
 const skill = (

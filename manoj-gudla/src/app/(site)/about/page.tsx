@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Kicker, PageHero } from "@/components/site/blocks";
 import { Photo } from "@/components/site/Photo";
+import { TopicIcon } from "@/components/site/TopicIcon";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { DEFAULT_PORTRAIT } from "@/content/defaults";
 import { getSiteContent } from "@/lib/data/content";
@@ -28,8 +30,9 @@ export default async function AboutPage() {
 
   return (
     <>
-      <section className={`container page-intro ${photo ? "page-intro--split" : ""}`}>
+      <PageHero mark="Hello" className={photo ? "page-intro--split" : ""}>
         <div>
+          <Kicker path="about" />
           <h1 data-reveal>Meet {profile.full_name}.</h1>
           {opening && (
             <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms" }}>
@@ -38,11 +41,11 @@ export default async function AboutPage() {
           )}
         </div>
         {photo && (
-          <div className="page-intro__media" data-reveal data-parallax="0.05">
+          <div className="page-intro__media framed" data-reveal>
             <Photo media={photo} label={`Photograph of ${first}`} priority sizes="(min-width: 900px) 360px, 90vw" />
           </div>
         )}
-      </section>
+      </PageHero>
 
       <section className="section" aria-labelledby="story-h">
         <div className="container split">
@@ -51,7 +54,7 @@ export default async function AboutPage() {
               In my own words
             </h2>
           </div>
-          <ol className="about-lines" role="list">
+          <ol className="about-lines about-lines--num" role="list">
             {restLines.map((l, i) => (
               <li key={i} data-reveal>
                 {l}
@@ -62,7 +65,8 @@ export default async function AboutPage() {
       </section>
 
       {profile.philosophy && (
-        <section className="section section--band" aria-label="Personal philosophy">
+        <section className="section section--stage stage" data-stage aria-label="Personal philosophy">
+          <div className="stage-glow" aria-hidden />
           <div className="container">
             <blockquote className="philosophy" data-reveal>
               {profile.philosophy.replace(/^["“]|["”]$/g, "")}
@@ -82,7 +86,8 @@ export default async function AboutPage() {
             <div>
               <ul className="interests" role="list">
                 {interests.map((i) => (
-                  <li key={i.id}>
+                  <li key={i.id} className="spot">
+                    <TopicIcon topic={`${i.title} ${i.description}`} />
                     <h3>{i.title}</h3>
                     <p>{i.description}</p>
                   </li>

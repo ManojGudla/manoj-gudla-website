@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Kicker, PageHero } from "@/components/site/blocks";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DraftFlag } from "@/components/site/blocks";
@@ -21,14 +22,15 @@ export default async function WorkWithMePage() {
 
   return (
     <>
-      <section className="container page-intro">
+      <PageHero mark="Together">
+        <Kicker path="work-with-me" />
         <h1 data-reveal>Work with me</h1>
         {profile.services_intro && (
           <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms", maxWidth: "48ch" }}>
             {profile.services_intro}
           </p>
         )}
-      </section>
+      </PageHero>
 
       <section className="container" style={{ paddingBottom: "var(--section)" }} aria-label="Services">
         <ul className="svc-grid" role="list">

@@ -23,6 +23,8 @@ export default async function ProjectsPage() {
   return (
     <>
       <PageIntro
+        path="projects"
+        mark="Build"
         title="Projects & innovation"
         lead="Products and ideas I design, build and keep improving — independently, end to end."
       />

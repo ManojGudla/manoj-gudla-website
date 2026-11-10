@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DraftFlag, PageIntro } from "@/components/site/blocks";
+import { Marquee } from "@/components/site/Marquee";
+import { TopicIcon } from "@/components/site/TopicIcon";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { DownloadIcon } from "@/components/ui/icons";
 import { getSiteContent } from "@/lib/data/content";
@@ -16,11 +18,11 @@ export const metadata: Metadata = {
   openGraph: { url: "/journey" },
 };
 
-const GROUPS: { key: SkillCategory; label: string }[] = [
-  { key: "programming", label: "Programming" },
-  { key: "development", label: "Development" },
-  { key: "ai_analytics", label: "AI and analytics" },
-  { key: "strengths", label: "Professional strengths" },
+const GROUPS: { key: SkillCategory; label: string; icon: string }[] = [
+  { key: "programming", label: "Programming", icon: "code" },
+  { key: "development", label: "Development", icon: "software" },
+  { key: "ai_analytics", label: "AI and analytics", icon: "ai" },
+  { key: "strengths", label: "Professional strengths", icon: "people" },
 ];
 
 const LEVEL: Record<NonNullable<Skill["proficiency"]>, string> = {
@@ -38,7 +40,13 @@ export default async function JourneyPage() {
 
   return (
     <>
-      <PageIntro title="Professional journey" lead={profile.professional_intro}>
+      <PageIntro
+        path="journey"
+        mark="Journey"
+        title="Professional journey"
+        lead={profile.professional_intro}
+        after={<Marquee items={skills.map((s) => s.name)} />}
+      >
         <div className="section-foot" style={{ marginTop: "2rem" }}>
           {resume ? (
             <a href={resume.url} className="btn" download target="_blank" rel="noopener">
@@ -66,7 +74,7 @@ export default async function JourneyPage() {
             </div>
             <ol className="timeline" role="list">
               {experience.map((e) => (
-                <li key={e.id}>
+                <li key={e.id} className="spot">
                   <div className="when">
                     {dateRange(e.start_label, e.end_label, e.is_current)}
                     {e.is_current && (
@@ -110,7 +118,7 @@ export default async function JourneyPage() {
             </div>
             <ol className="timeline" role="list">
               {education.map((e) => (
-                <li key={e.id}>
+                <li key={e.id} className="spot">
                   <div className="when">
                     {dateRange(e.start_label, e.end_label, false) || (e.progress === "pursuing" ? "In progress" : "Completed")}
                   </div>
@@ -142,8 +150,10 @@ export default async function JourneyPage() {
                 const list = skills.filter((s) => s.category === g.key);
                 if (!list.length) return null;
                 return (
-                  <div className="skill-group" key={g.key}>
-                    <h3>{g.label}</h3>
+                  <div className="skill-group spot" key={g.key}>
+                    <h3>
+                      <TopicIcon topic={g.icon} /> {g.label}
+                    </h3>
                     <ul className="chips" role="list">
                       {list.map((s) => (
                         <li key={s.id} className="chip">
@@ -175,11 +185,14 @@ export default async function JourneyPage() {
                 </Link>
               </p>
             </div>
-            <ul className="rows" role="list">
+            <ul className="certs" role="list">
               {certifications.map((c) => {
                 const proof = resolveMediaFrom(content, c.media_id);
                 return (
-                  <li key={c.id}>
+                  <li key={c.id} className="spot">
+                    <span className="certs__mono" aria-hidden>
+                      {(c.issuer || c.title).trim().charAt(0).toUpperCase()}
+                    </span>
                     <span className="title">
                       {c.title} <DraftFlag status={c.status} />
                     </span>
@@ -228,7 +241,8 @@ export default async function JourneyPage() {
       )}
 
       {profile.career_direction && (
-        <section className="section section--band" aria-labelledby="dir-h">
+        <section className="section section--stage stage" data-stage aria-labelledby="dir-h">
+          <div className="stage-glow" aria-hidden />
           <div className="container split">
             <div className="split__head">
               <h2 className="section-title" id="dir-h" data-reveal>

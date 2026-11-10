@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { DraftFlag, PageIntro } from "@/components/site/blocks";
+import { TopicIcon } from "@/components/site/TopicIcon";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { getSiteContent } from "@/lib/data/content";
 
@@ -23,6 +24,8 @@ export default async function BeyondPage() {
   return (
     <>
       <PageIntro
+        path="beyond-work"
+        mark="Curious"
         title="Beyond work"
         lead="The things I do when nobody's asking — exploring, experimenting, creating and meeting people."
       />
@@ -37,7 +40,8 @@ export default async function BeyondPage() {
             </div>
             <ul className="interests" role="list">
               {interests.map((i) => (
-                <li key={i.id}>
+                <li key={i.id} className="spot">
+                  <TopicIcon topic={`${i.title} ${i.description}`} />
                   <h3>
                     {i.title} <DraftFlag status={i.status} />
                   </h3>

@@ -21,6 +21,8 @@ export default async function AchievementsPage() {
   return (
     <>
       <PageIntro
+        path="achievements"
+        mark="Milestones"
         title="Achievements & recognition"
         lead="Milestones I'm proud of so far. Personal highlights are marked as such; external recognition is listed separately."
       />

@@ -317,7 +317,8 @@ export default async function HomePage() {
             </CommandTrigger>
 
             {/* Call to action */}
-            <article className="tile t-cta" data-reveal style={{ ["--n" as string]: n++ }}>
+            <article className="tile t-cta" data-stage data-reveal style={{ ["--n" as string]: n++ }}>
+              <div className="stage-glow" aria-hidden />
               <p className="tile__label">{services.length ? "Work with me" : "Let's talk"}</p>
               <h3 className="tile__title">Have an idea, a role or a collaboration in mind?</h3>
               <div className="tile__foot">

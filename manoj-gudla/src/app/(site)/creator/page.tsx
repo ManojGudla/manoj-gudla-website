@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ContentCard, SplitTitle, StatList } from "@/components/site/blocks";
+import { ContentCard, Kicker, PageHero, SplitTitle, StatList } from "@/components/site/blocks";
+import { TopicIcon } from "@/components/site/TopicIcon";
 import { Photo } from "@/components/site/Photo";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { InstagramIcon, LinkedInIcon, YouTubeIcon } from "@/components/ui/icons";
@@ -68,13 +69,15 @@ export default async function CreatorPage() {
 
   return (
     <>
-      <section className={`container page-intro ${photo ? "page-intro--split" : ""}`}>
+      <PageHero mark="Create" className="page-intro--split">
         <div>
+          <Kicker path="creator" />
           <h1 data-reveal><SplitTitle text={profile.creator_title || "Creator hub"} /></h1>
           <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms", maxWidth: "44ch" }}>
             {profile.creator_intro}
           </p>
-          <div className="section-foot">
+          {photo && (
+            <div className="section-foot">
             {profile.youtube_url && (
               <a className="btn" href={profile.youtube_url} target="_blank" rel="me noopener noreferrer">
                 <YouTubeIcon /> Subscribe on YouTube
@@ -86,13 +89,43 @@ export default async function CreatorPage() {
               </a>
             )}
           </div>
+          )}
         </div>
-        {photo && (
-          <div className="page-intro__media" data-reveal>
+        {photo ? (
+          <div className="page-intro__media framed" data-reveal>
             <Photo media={photo} label="Creator photograph" priority sizes="(min-width: 900px) 360px, 90vw" />
           </div>
+        ) : (
+          (profile.youtube_url || profile.instagram_url) && (
+            <ul className="platforms" role="list" data-reveal style={{ ["--rd" as string]: "200ms" }}>
+              {profile.youtube_url && (
+                <li>
+                  <a className="platform platform--yt" href={profile.youtube_url} target="_blank" rel="me noopener noreferrer">
+                    <span className="platform__icon">
+                      <YouTubeIcon />
+                    </span>
+                    <span className="platform__name">YouTube</span>
+                    <span className="platform__what">Tech, AI and lifestyle videos</span>
+                    <span className="platform__go">Watch the channel</span>
+                  </a>
+                </li>
+              )}
+              {profile.instagram_url && (
+                <li>
+                  <a className="platform platform--ig" href={profile.instagram_url} target="_blank" rel="me noopener noreferrer">
+                    <span className="platform__icon">
+                      <InstagramIcon />
+                    </span>
+                    <span className="platform__name">Instagram</span>
+                    <span className="platform__what">Reels and quick tips</span>
+                    <span className="platform__go">See the reels</span>
+                  </a>
+                </li>
+              )}
+            </ul>
+          )
         )}
-      </section>
+      </PageHero>
 
       {creatorStats.length > 0 && (
         <section className="section section--band" aria-labelledby="reach-h">
@@ -141,7 +174,8 @@ export default async function CreatorPage() {
           </div>
           <ul className="interests" role="list">
             {CATEGORIES.map((c) => (
-              <li key={c.key}>
+              <li key={c.key} className="spot">
+                <TopicIcon topic={c.key === "technology" ? "tech" : c.key} />
                 <h3>{c.title}</h3>
                 <p>{c.text}</p>
               </li>
@@ -163,7 +197,7 @@ export default async function CreatorPage() {
               quickly. Ask for current audience figures and recent examples — I&apos;ll share them with dates.
             </p>
           </div>
-          <div className="kit">
+          <div className="kit kit--steps">
             <div>
               <h3>Formats</h3>
               <p>YouTube videos, Instagram reels and posts, and LinkedIn write-ups for professional audiences.</p>
@@ -180,7 +214,8 @@ export default async function CreatorPage() {
         </div>
       </section>
 
-      <section className="section section--band" aria-labelledby="collab-h">
+      <section className="section section--stage stage" data-stage aria-labelledby="collab-h">
+        <div className="stage-glow" aria-hidden />
         <div className="container cta">
           <h2 id="collab-h">Let&apos;s create something your audience will remember.</h2>
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>

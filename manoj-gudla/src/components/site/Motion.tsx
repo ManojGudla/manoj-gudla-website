@@ -76,7 +76,7 @@ export function Motion() {
     });
 
     // Spotlight that follows the pointer on bento tiles.
-    const tiles = fine ? Array.from(document.querySelectorAll<HTMLElement>(".tile")) : [];
+    const tiles = fine ? Array.from(document.querySelectorAll<HTMLElement>(".tile, .spot")) : [];
     const spot = tiles.map((el) => {
       const move = (e: PointerEvent) => {
         const r = el.getBoundingClientRect();

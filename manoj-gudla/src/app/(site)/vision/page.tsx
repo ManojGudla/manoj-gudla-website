@@ -21,6 +21,8 @@ export default async function VisionPage() {
   return (
     <>
       <PageIntro
+        path="vision"
+        mark="Next"
         title="Vision & ambitions"
         lead="Build a recognisable personal brand that connects technology, innovation, creativity, business and entrepreneurship."
       >

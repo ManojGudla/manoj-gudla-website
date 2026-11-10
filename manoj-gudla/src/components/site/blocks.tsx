@@ -5,9 +5,62 @@ import { devStatusLabel, platformLabel, statValue, formatDate, youtubeId } from 
 import type { Achievement, CreatorContent, CreatorStat, Project, ResolvedMedia, SiteContent, VisionItem } from "@/lib/types";
 import { resolveMediaFrom } from "./resolve";
 
-export function PageIntro({ title, lead, children }: { title: string; lead?: string; children?: React.ReactNode }) {
+/**
+ * The dark band every inner page opens with: fine grid that lights up under
+ * the pointer, a large outlined watermark word and a path-style kicker.
+ */
+export function PageHero({
+  mark,
+  children,
+  className = "",
+  after,
+}: {
+  mark?: string;
+  children: React.ReactNode;
+  className?: string;
+  after?: React.ReactNode;
+}) {
   return (
-    <section className="container page-intro">
+    <section className="stage pagehero" data-stage>
+      <div className="stage-glow" aria-hidden />
+      {mark && (
+        <span className="pagehero__mark" aria-hidden>
+          {mark}
+        </span>
+      )}
+      <div className={`container page-intro ${className}`}>{children}</div>
+      {after}
+    </section>
+  );
+}
+
+export function Kicker({ path }: { path: string }) {
+  return (
+    <p className="kicker" data-reveal>
+      <span className="kicker__dot" aria-hidden />
+      <span className="kicker__path">~/{path}</span>
+    </p>
+  );
+}
+
+export function PageIntro({
+  title,
+  lead,
+  children,
+  path,
+  mark,
+  after,
+}: {
+  title: string;
+  lead?: string;
+  children?: React.ReactNode;
+  path?: string;
+  mark?: string;
+  after?: React.ReactNode;
+}) {
+  return (
+    <PageHero mark={mark} after={after}>
+      {path && <Kicker path={path} />}
       <h1 data-reveal>{title}</h1>
       {lead && (
         <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms" }}>
@@ -15,7 +68,7 @@ export function PageIntro({ title, lead, children }: { title: string; lead?: str
         </p>
       )}
       {children}
-    </section>
+    </PageHero>
   );
 }
 

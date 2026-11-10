@@ -1608,3 +1608,39 @@ dialog.cmdk::backdrop {
     transform: none;
   }
 }
+
+/* CTA tile: explicit layout + grid and light like the hero */
+@media (min-width: 1100px) {
+  .t-cta .tile__title {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .t-cta .tile__foot {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+.t-cta {
+  isolation: isolate;
+  min-height: 15rem;
+  justify-content: space-between;
+  background-image:
+    radial-gradient(60% 120% at 100% 0%, rgb(139 149 255 / 0.28), transparent 60%),
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size:
+    auto,
+    48px 48px,
+    48px 48px;
+}
+
+.t-cta .tile__title {
+  font-size: clamp(1.8rem, 3.6vw, 3rem);
+  letter-spacing: -0.035em;
+}
+
+.t-cta .stage-glow {
+  background-size: 48px 48px;
+}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Kicker, PageHero } from "@/components/site/blocks";
 import Link from "next/link";
 import { PathFinder } from "@/components/site/PathFinder";
 import { ResourceLibrary } from "@/components/site/ResourceLibrary";
@@ -18,13 +19,32 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
 
   return (
     <>
-      <section className="container page-intro">
-        <h1 data-reveal>Free resources</h1>
+      <PageHero mark="Free" className="page-intro--res">
+        <div>
+          <Kicker path="resources" />
+          <h1 data-reveal>Free resources</h1>
         <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms", maxWidth: "46ch" }}>
           The tools, courses and links I recommend for learning tech, AI and content creation. Saw something in one of my videos? Its
           resources are below.
-        </p>
-      </section>
+          </p>
+        </div>
+        {resources.length > 0 && (
+          <dl className="hero-figs" data-reveal style={{ ["--rd" as string]: "200ms" }}>
+            <div>
+              <dt>Resources</dt>
+              <dd>{resources.length}</dd>
+            </div>
+            <div>
+              <dt>Topics</dt>
+              <dd>{new Set(resources.map((r) => r.category)).size}</dd>
+            </div>
+            <div>
+              <dt>Free to use</dt>
+              <dd>{resources.filter((r) => r.pricing === "free").length}</dd>
+            </div>
+          </dl>
+        )}
+      </PageHero>
 
       {packs.length > 0 && (
         <section className="container" aria-labelledby="packs-h" style={{ paddingBottom: "clamp(2.5rem, 6vw, 4rem)" }}>
