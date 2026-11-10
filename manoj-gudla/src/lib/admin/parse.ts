@@ -114,6 +114,12 @@ export function parseFields(fields: Field[], fd: FormData): { data: Record<strin
         data[f.name] = items;
         break;
       }
+      case "relation": {
+        // Converted to "select" by resolveRelations() before validation; treat stray values as unset.
+        const v = cleanText(raw);
+        data[f.name] = v && UUID.test(v) ? v : null;
+        break;
+      }
       case "media": {
         const v = cleanText(raw);
         if (!v) {

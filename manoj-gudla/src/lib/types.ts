@@ -71,6 +71,10 @@ export interface Profile extends Timestamps {
   creator_title: string;
   creator_intro: string;
   experience_summary: string;
+  now_building: string;
+  now_learning: string;
+  now_creating: string;
+  services_intro: string;
   photo_media_id: string | null;
   about_photo_media_id: string | null;
   creator_photo_media_id: string | null;
@@ -168,6 +172,7 @@ export interface CreatorContent extends Publishable {
   thumbnail_media_id: string | null;
   published_on: string | null;
   is_featured: boolean;
+  resource_pack_id: string | null;
 }
 
 export interface CreatorStat extends Publishable {
@@ -244,6 +249,43 @@ export interface Enquiry extends Timestamps {
   user_agent: string;
 }
 
+export type Pricing = "free" | "freemium" | "paid";
+
+export interface Resource extends Publishable {
+  name: string;
+  url: string;
+  description: string;
+  category: string;
+  pricing: Pricing;
+  tag: string;
+}
+
+export interface ResourcePack extends Publishable {
+  code: string;
+  title: string;
+  intro: string;
+  keyword: string;
+  video_url: string;
+  platform: Platform;
+  published_on: string | null;
+}
+
+export interface ResourcePackItem extends Timestamps {
+  id: string;
+  pack_id: string;
+  resource_id: string;
+  note: string;
+  sort_order: number;
+}
+
+export interface Service extends Publishable {
+  title: string;
+  summary: string;
+  for_whom: string;
+  deliverables: string[];
+  enquiry_type: EnquiryCategory;
+}
+
 /** Everything the public site needs, loaded once per request/revalidation. */
 export interface SiteContent {
   profile: Profile;
@@ -260,6 +302,10 @@ export interface SiteContent {
   gallery: GalleryItem[];
   interests: Interest[];
   vision: VisionItem[];
+  resources: Resource[];
+  packs: ResourcePack[];
+  packItems: ResourcePackItem[];
+  services: Service[];
   media: Record<string, ResolvedMedia>;
   /** "database" when read from Supabase, "seed" when running without a database. */
   source: "database" | "seed";

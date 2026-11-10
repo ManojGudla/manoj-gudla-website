@@ -75,7 +75,20 @@ export function Motion() {
       };
     });
 
+    // Spotlight that follows the pointer on bento tiles.
+    const tiles = fine ? Array.from(document.querySelectorAll<HTMLElement>(".tile")) : [];
+    const spot = tiles.map((el) => {
+      const move = (e: PointerEvent) => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+        el.style.setProperty("--my", `${e.clientY - r.top}px`);
+      };
+      el.addEventListener("pointermove", move);
+      return () => el.removeEventListener("pointermove", move);
+    });
+
     return () => {
+      spot.forEach((off) => off());
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);

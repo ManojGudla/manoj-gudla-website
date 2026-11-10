@@ -30,16 +30,19 @@ Without Supabase values the public site still runs, using the starting content i
 | Home | `/` |
 | About | `/about` |
 | Professional journey (experience, education, skills, résumé) | `/journey` |
-| Projects and project detail pages | `/projects`, `/projects/<slug>` |
+| Free resources (searchable library) | `/resources` |
+| Resource pack for one video | `/r/<code>` |
+| Work with me (appears once a service is published) | `/work-with-me` |
+| Projects (appear once a project is published) | `/projects`, `/projects/<slug>` |
 | Creator hub | `/creator` |
 | Achievements and recognition | `/achievements` |
 | Beyond work | `/beyond` |
 | Vision and ambitions | `/vision` |
 | Contact and collaborations | `/contact` |
 
-The main menu shows About, Journey, Projects, Creator and Contact. Achievements, Beyond Work and Vision are linked from those pages and the footer.
+The main menu shows About, Journey, Creator, Resources and Contact, plus Work with me and Projects once they have content. Achievements, Beyond Work and Vision are linked from the footer and the Ctrl + K search.
 
-Dashboard modules (all at `/admin`): Overview · Enquiries · Profile · Projects (with screenshots) · Achievements · Creator content · Audience statistics · Experience · Education · Skills · Certifications · Interests · Gallery · Vision & goals · Media library · Settings. Every content item has Draft / Preview / Publish / Unpublish / Update / Delete and can be reordered.
+Dashboard modules (all at `/admin`): Overview · Enquiries · Profile · Services · Projects (with screenshots) · Achievements · Creator content · Audience statistics · Resource packs · Resource library · Experience · Education · Skills · Certifications · Interests · Gallery · Vision & goals · Media library · Settings. Every content item has Draft / Preview / Publish / Unpublish / Update / Delete and can be reordered.
 
 ## How it fits together
 

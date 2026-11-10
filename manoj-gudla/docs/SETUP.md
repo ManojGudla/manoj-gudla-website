@@ -17,7 +17,10 @@ In Supabase → **SQL Editor** → **New query**, paste and **Run** each file be
 
 1. `supabase/migrations/0001_schema.sql` — creates all tables and the access rules.
 2. `supabase/migrations/0002_storage.sql` — creates the two file buckets (`media`, public; `incoming`, private) and their rules.
-3. `supabase/seed.sql` — adds your starting content (profile, TCS role, education, skills, certifications, maNOWj GeoIntel, highlights, interests, vision).
+3. `supabase/migrations/0003_resources_services.sql` — adds resources, resource packs and services.
+4. `supabase/seed.sql` — adds your starting content (profile, TCS role, education, skills, certifications, highlights, interests, vision, and the 37-resource library).
+
+**Already set up with the first version?** Don't run the files above. Run only `supabase/upgrade-v2.sql` (one paste, safe to run twice). It adds the new tables, imports the resources, and removes maNOWj GeoIntel, without touching anything you've edited.
 
 Each should finish with "Success. No rows returned". Running `seed.sql` again later never overwrites what you've edited.
 
@@ -64,7 +67,7 @@ For running on your own computer, copy `.env.example` to `.env.local` and fill t
 
 ## 6. Deploy on Vercel
 
-1. Push this project to a **new** GitHub repository (keep it separate from GeoIntel).
+1. Push this project to a **new** GitHub repository of its own.
 2. vercel.com → **Add New** → **Project** → import that repository. Framework: Next.js (detected automatically).
 3. Before clicking Deploy, open **Environment Variables** and add everything from step 5. For now set `NEXT_PUBLIC_SITE_URL` to the address Vercel gives you, e.g. `https://manoj-gudla.vercel.app`.
 4. **Deploy.** When it finishes, open the site, then go to `/admin` and sign in.

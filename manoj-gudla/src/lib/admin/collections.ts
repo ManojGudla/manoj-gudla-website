@@ -18,16 +18,18 @@ type Base = {
 };
 
 export type Field =
-  | (Base & { type: "text"; max: number; placeholder?: string })
+  | (Base & { type: "text"; max: number; placeholder?: string; suggestions?: string[] })
   | (Base & { type: "textarea"; max: number; rows?: number; placeholder?: string })
   | (Base & { type: "url" })
   | (Base & { type: "slug" })
   | (Base & { type: "number" })
   | (Base & { type: "date" })
   | (Base & { type: "boolean" })
-  | (Base & { type: "select"; options: { value: string; label: string }[]; nullable?: boolean })
+  | (Base & { type: "select"; options: { value: string; label: string }[]; nullable?: boolean; emptyLabel?: string })
   | (Base & { type: "list"; maxItems: number; itemMax: number })
-  | (Base & { type: "media"; category: MediaCategory; accept?: "image" | "pdf" });
+  | (Base & { type: "media"; category: MediaCategory; accept?: "image" | "pdf" })
+  /** A link to a row in another table; turned into a select with live options on the server. */
+  | (Base & { type: "relation"; table: string; labelField: string; emptyLabel: string });
 
 export interface Collection {
   /** URL segment under /admin */
@@ -54,7 +56,121 @@ const PLATFORMS = [
   { value: "other", label: "Other" },
 ];
 
+export const RESOURCE_CATEGORIES = [
+  "AI Tools",
+  "Career & Interviews",
+  "MCA & Study",
+  "Projects & Code",
+  "Free Learning",
+  "Developer Toolkit",
+  "Data & Analytics",
+  "Web Development",
+  "Cloud & DevOps",
+  "Coding Practice",
+  "Creator Resources",
+];
+
+const PRICING = [
+  { value: "free", label: "Free" },
+  { value: "freemium", label: "Free + paid plans" },
+  { value: "paid", label: "Paid" },
+];
+
 export const COLLECTIONS: Collection[] = [
+  {
+    key: "resource-packs",
+    table: "resource_packs",
+    singular: "resource pack",
+    plural: "Resource packs",
+    group: "Resources",
+    description:
+      "One pack per video. Share the link (yoursite/r/code) with people who comment for resources. Add the tools to a pack at the bottom of its page.",
+    titleField: "title",
+    metaFields: ["code", "keyword"],
+    previewPath: (r) => `/r/${r.code}`,
+    fields: [
+      { name: "title", label: "Title", type: "text", max: 160, required: true, wide: true, placeholder: "e.g. 5 AI tools that save me hours" },
+      {
+        name: "code",
+        label: "Short link code",
+        type: "slug",
+        required: true,
+        hint: "Lowercase words and hyphens, up to 40 characters. “ai-tools” makes the link /r/ai-tools.",
+      },
+      { name: "keyword", label: "Comment keyword (private note)", type: "text", max: 30, placeholder: "e.g. AI", hint: "The word you ask viewers to comment. Only shown in the dashboard." },
+      {
+        name: "platform",
+        label: "Video is on",
+        type: "select",
+        options: [
+          { value: "instagram", label: "Instagram" },
+          { value: "youtube", label: "YouTube" },
+          { value: "linkedin", label: "LinkedIn" },
+          { value: "other", label: "Other" },
+        ],
+      },
+      { name: "published_on", label: "Video date", type: "date" },
+      { name: "video_url", label: "Link to the video", type: "url", wide: true, hint: "YouTube links are embedded on the page; others show a “Watch” button." },
+      { name: "intro", label: "Short intro", type: "textarea", max: 1000, rows: 3, wide: true },
+    ],
+  },
+  {
+    key: "resources",
+    table: "resources",
+    singular: "resource",
+    plural: "Resource library",
+    group: "Resources",
+    description: "Every tool, course and link on the Resources page. Packs pick their items from here, so fixing a link here fixes it everywhere.",
+    titleField: "name",
+    metaFields: ["category", "pricing"],
+    previewPath: () => "/resources",
+    fields: [
+      { name: "name", label: "Name", type: "text", max: 120, required: true },
+      { name: "url", label: "Link", type: "url", required: true },
+      {
+        name: "category",
+        label: "Topic",
+        type: "text",
+        max: 60,
+        required: true,
+        suggestions: RESOURCE_CATEGORIES,
+        hint: "Pick one from the list or type a new topic.",
+      },
+      { name: "pricing", label: "Price", type: "select", options: PRICING },
+      { name: "description", label: "What it's for (one line)", type: "textarea", max: 400, rows: 2, wide: true },
+      { name: "tag", label: "Badge (optional)", type: "text", max: 30, placeholder: "e.g. Start here" },
+    ],
+  },
+  {
+    key: "services",
+    table: "services",
+    singular: "service",
+    plural: "Services",
+    group: "Work",
+    description: "Offers on the “Work with me” page. The page and its menu link appear once at least one service is published.",
+    titleField: "title",
+    metaFields: ["enquiry_type"],
+    previewPath: () => "/work-with-me",
+    fields: [
+      { name: "title", label: "Service", type: "text", max: 120, required: true },
+      {
+        name: "enquiry_type",
+        label: "Contact form topic",
+        type: "select",
+        options: [
+          { value: "brand", label: "Brand collaboration" },
+          { value: "project", label: "Project enquiry" },
+          { value: "partnership", label: "Business partnership" },
+          { value: "career", label: "Career opportunity" },
+          { value: "general", label: "General conversation" },
+        ],
+        hint: "“Start a conversation” opens the contact form with this topic selected.",
+      },
+      { name: "summary", label: "Summary", type: "textarea", max: 600, rows: 3, wide: true },
+      { name: "for_whom", label: "Who it's for", type: "text", max: 200, wide: true },
+      { name: "deliverables", label: "What's included", type: "list", maxItems: 12, itemMax: 160, wide: true, hint: "One per line." },
+    ],
+  },
   {
     key: "projects",
     table: "projects",
@@ -120,6 +236,16 @@ export const COLLECTIONS: Collection[] = [
       { name: "description", label: "Description", type: "textarea", max: 1000, rows: 3, wide: true },
       { name: "published_on", label: "Published on", type: "date" },
       { name: "is_featured", label: "Featured", type: "boolean", hint: "Featured items show on the homepage." },
+      {
+        name: "resource_pack_id",
+        label: "Resource pack for this video",
+        type: "relation",
+        table: "resource_packs",
+        labelField: "title",
+        emptyLabel: "No resource pack",
+        wide: true,
+        hint: "Viewers see a “Resources from this video” link. Create the pack first under Resource packs.",
+      },
       { name: "thumbnail_media_id", label: "Thumbnail", type: "media", category: "thumbnail", wide: true },
     ],
   },

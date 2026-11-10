@@ -6,6 +6,8 @@ import { ItemForm } from "@/components/admin/ItemForm";
 import { getCollection } from "@/lib/admin/collections";
 import { deleteItem, moveProjectImage, removeProjectImage, saveItem, updateProjectImage } from "@/lib/admin/actions/content";
 import { selectedMediaFor } from "@/lib/admin/media-map";
+import { resolveRelations } from "@/lib/admin/relations";
+import { PackItems } from "@/components/admin/PackItems";
 import { requireAdmin } from "@/lib/auth";
 import { mediaPublicUrl } from "@/lib/media-url";
 import { createSessionClient } from "@/lib/supabase/server";
@@ -26,6 +28,9 @@ function defaults(table: string): Record<string, unknown> {
     achievements: { kind: "milestone" },
     gallery_items: { category: "lifestyle" },
     vision_items: { area: "technologies", horizon: "Next" },
+    resources: { category: "AI Tools", pricing: "free" },
+    resource_packs: { platform: "instagram" },
+    services: { enquiry_type: "brand" },
   };
   return base[table] ?? {};
 }
@@ -53,6 +58,7 @@ export default async function EditItem({
     row = data;
   }
   const media = await selectedMediaFor(db, col.fields, row);
+  const fields = await resolveRelations(db, col.fields);
 
   let screenshots: { id: string; caption: string; url: string; file_name: string }[] = [];
   if (col.table === "projects" && !isNew) {
@@ -97,7 +103,7 @@ export default async function EditItem({
 
       <ItemForm
         action={saveItem}
-        fields={col.fields}
+        fields={fields}
         values={row}
         media={media}
         hidden={{ _collection: col.key, ...(isNew ? {} : { _id: id }) }}
@@ -155,6 +161,8 @@ export default async function EditItem({
           </div>
         </section>
       )}
+
+      {col.table === "resource_packs" && !isNew && <PackItems packId={id} error={sp.item_error} added={"item_added" in sp} />}
 
       {!isNew && (
         <section className="panel" style={{ marginTop: "1.25rem" }} aria-labelledby="danger-h">

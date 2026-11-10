@@ -3,10 +3,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { CloseIcon, MenuIcon } from "@/components/ui/icons";
-import { CONTACT, MORE, NAV } from "./nav";
+import { openCommandMenu } from "./CommandMenu";
+import { CONTACT, MORE, type NavItem } from "./nav";
 import { ThemeToggle } from "./ThemeToggle";
 
-export function Header({ name }: { name: string }) {
+export function Header({ name, nav }: { name: string; nav: NavItem[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -53,7 +54,7 @@ export function Header({ name }: { name: string }) {
         </Link>
 
         <nav className="nav" aria-label="Main">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link key={item.href} href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
               {item.label}
             </Link>
@@ -61,6 +62,16 @@ export function Header({ name }: { name: string }) {
         </nav>
 
         <div className="header-actions">
+          <button type="button" className="search-btn" onClick={openCommandMenu}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <span className="txt">Search</span>
+            <span className="kbd" aria-hidden>
+              Ctrl K
+            </span>
+          </button>
           <Link href={CONTACT.href} className="btn btn--sm header-cta">
             Let&apos;s connect
           </Link>
@@ -93,7 +104,7 @@ export function Header({ name }: { name: string }) {
               </button>
             </div>
             <nav className="menu-list" aria-label="Main">
-              {[{ href: "/", label: "Home", hint: "Start here" }, ...NAV, CONTACT].map((item) => (
+              {[{ href: "/", label: "Home", hint: "Start here" }, ...nav, CONTACT].map((item) => (
                 <Link key={item.href} href={item.href} aria-current={pathname === item.href ? "page" : undefined}>
                   <strong>{item.label}</strong>
                   <span>{item.hint}</span>

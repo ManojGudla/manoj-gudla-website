@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { Profile, SiteSettings } from "@/lib/types";
-import { CONTACT, MORE, NAV } from "./nav";
+import { CONTACT, MORE, type NavItem } from "./nav";
 import { SocialLinks } from "./SocialLinks";
 
-export function Footer({ profile, settings }: { profile: Profile; settings: SiteSettings }) {
+export function Footer({ profile, settings, nav }: { profile: Profile; settings: SiteSettings; nav: NavItem[] }) {
   const year = new Date().getFullYear();
   return (
     <footer className="site-footer">
@@ -20,7 +20,7 @@ export function Footer({ profile, settings }: { profile: Profile; settings: Site
               <li>
                 <Link href="/">Home</Link>
               </li>
-              {[...NAV, ...MORE, CONTACT].map((n) => (
+              {[...nav, ...MORE, CONTACT].map((n) => (
                 <li key={n.href}>
                   <Link href={n.href}>{n.label}</Link>
                 </li>

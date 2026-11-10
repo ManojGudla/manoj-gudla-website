@@ -8,7 +8,7 @@ export PGDATABASE=${PGDATABASE:-mg_e2e}
 stop() { pkill -f "fake-supabase.mjs" 2>/dev/null || true; pkill -f "next start" 2>/dev/null || true; pkill -f "next-server" 2>/dev/null || true; }
 stop; sleep 1
 psql -q -d postgres -c "drop database if exists $PGDATABASE" -c "create database $PGDATABASE"
-for f in tests/db/supabase-stub.sql supabase/migrations/0001_schema.sql supabase/migrations/0002_storage.sql supabase/seed.sql tests/e2e/setup-db.sql; do
+for f in tests/db/supabase-stub.sql supabase/migrations/0001_schema.sql supabase/migrations/0002_storage.sql supabase/migrations/0003_resources_services.sql supabase/seed.sql tests/e2e/setup-db.sql; do
   psql -q -v ON_ERROR_STOP=1 -f "$f" 2>&1 | grep -v NOTICE || true
 done
 

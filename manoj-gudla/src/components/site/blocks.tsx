@@ -117,29 +117,25 @@ export function ContentCard({ item, content }: { item: CreatorContent; content: 
   const thumb: ResolvedMedia | null =
     uploaded ?? (yt ? { id: yt, url: `https://i.ytimg.com/vi/${yt}/hqdefault.jpg`, alt: "", width: 480, height: 360, mime: "image/jpeg" } : null);
   const portrait = item.platform === "instagram";
+  const pack = item.resource_pack_id ? content.packs.find((p) => p.id === item.resource_pack_id) : undefined;
   return (
-    <a
-      href={item.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`content-card ${portrait ? "content-card--portrait" : ""}`}
-    >
-      <div style={{ position: "relative" }}>
-        <Photo
-          media={thumb ? { ...thumb, alt: thumb.alt || `Thumbnail: ${item.title}` } : null}
-          label={`${platformLabel[item.platform]} thumbnail`}
-          sizes="(min-width: 1000px) 33vw, (min-width: 640px) 50vw, 100vw"
-        />
-        {item.platform === "youtube" && (
-          <span className="play" aria-hidden>
-            <span>
-              <PlayIcon />
+    <div className={`content-card ${portrait ? "content-card--portrait" : ""}`}>
+      <a href={item.url} target="_blank" rel="noopener noreferrer" className="content-card__link">
+        <div style={{ position: "relative" }}>
+          <Photo
+            media={thumb ? { ...thumb, alt: thumb.alt || `Thumbnail: ${item.title}` } : null}
+            label={`${platformLabel[item.platform]} thumbnail`}
+            sizes="(min-width: 1000px) 33vw, (min-width: 640px) 50vw, 100vw"
+          />
+          {item.platform === "youtube" && (
+            <span className="play" aria-hidden>
+              <span>
+                <PlayIcon />
+              </span>
             </span>
-          </span>
-        )}
-      </div>
-      <div>
-        <p className="meta">
+          )}
+        </div>
+        <p className="meta" style={{ marginTop: "0.75rem" }}>
           {platformLabel[item.platform]}
           {item.published_on ? `, ${formatDate(item.published_on)}` : ""} <DraftFlag status={item.status} />
         </p>
@@ -150,8 +146,13 @@ export function ContentCard({ item, content }: { item: CreatorContent; content: 
           </p>
         )}
         <span className="sr-only"> (opens {platformLabel[item.platform]} in a new tab)</span>
-      </div>
-    </a>
+      </a>
+      {pack && (
+        <Link href={`/r/${pack.code}`} className="tile__link">
+          Resources from this {item.platform === "youtube" ? "video" : "post"}
+        </Link>
+      )}
+    </div>
   );
 }
 

@@ -10,8 +10,8 @@ BASE = os.environ.get("BASE", "http://localhost:3200")
 OUT = os.environ.get("SHOTS_DIR", "/var/tmp/qa-shots")
 os.makedirs(OUT, exist_ok=True)
 AXE = open(os.path.join(os.path.dirname(__file__), "../../node_modules/axe-core/axe.min.js")).read()
-PAGES = ["/", "/about", "/journey", "/projects", "/projects/manowj-geointel", "/creator", "/achievements", "/beyond", "/vision", "/contact"]
-ADMIN_PAGES = ["/admin", "/admin/projects", "/admin/projects/00000000-0000-4000-8005-000000000001", "/admin/profile", "/admin/media", "/admin/enquiries", "/admin/settings"]
+PAGES = ["/", "/about", "/journey", "/resources", "/creator", "/achievements", "/beyond", "/vision", "/contact"]
+ADMIN_PAGES = ["/admin", "/admin/resource-packs", "/admin/resource-packs/00000000-0000-4000-800b-000000000001", "/admin/resources", "/admin/profile", "/admin/media", "/admin/enquiries", "/admin/settings"]
 
 report = {"axe": [], "overflow": []}
 

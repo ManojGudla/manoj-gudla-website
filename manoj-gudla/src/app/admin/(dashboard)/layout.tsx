@@ -22,6 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { label: "", items: [{ href: "/admin", label: "Overview" }, { href: "/admin/enquiries", label: "Enquiries", count: newCount ?? 0 }] },
     { label: "Content", items: [{ href: "/admin/profile", label: "Profile" }, ...byGroup("Work")] },
     { label: "Creator", items: byGroup("Creator") },
+    { label: "Resources", items: byGroup("Resources") },
     { label: "Journey", items: byGroup("Journey") },
     { label: "Other pages", items: byGroup("Pages") },
     { label: "Site", items: [{ href: "/admin/media", label: "Media library" }, { href: "/admin/settings", label: "Settings" }] },

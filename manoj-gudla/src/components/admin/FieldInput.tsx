@@ -61,7 +61,7 @@ export function FieldInput({
     case "select":
       control = (
         <select className="select" {...common} defaultValue={value == null ? "" : String(value)}>
-          {f.nullable && <option value="">Not set</option>}
+          {f.nullable && <option value="">{f.emptyLabel ?? "Not set"}</option>}
           {f.options.map((o) => (
             <option key={o.value} value={o.value}>
               {o.label}
@@ -82,8 +82,28 @@ export function FieldInput({
     case "slug":
       control = <input className="input" pattern="[a-z0-9]+(-[a-z0-9]+)*" spellCheck={false} {...common} defaultValue={value == null ? "" : String(value)} />;
       break;
-    default:
-      control = <input className="input" {...common} value={text} onChange={(e) => setText(e.target.value)} placeholder={"placeholder" in f ? f.placeholder : undefined} />;
+    default: {
+      const suggestions = f.type === "text" ? f.suggestions : undefined;
+      control = (
+        <>
+          <input
+            className="input"
+            {...common}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={"placeholder" in f ? f.placeholder : undefined}
+            list={suggestions ? `${id}-list` : undefined}
+          />
+          {suggestions && (
+            <datalist id={`${id}-list`}>
+              {suggestions.map((o) => (
+                <option key={o} value={o} />
+              ))}
+            </datalist>
+          )}
+        </>
+      );
+    }
   }
 
   return (

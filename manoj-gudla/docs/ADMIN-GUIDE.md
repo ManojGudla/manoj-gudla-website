@@ -35,7 +35,9 @@ The **Overview** page lists what needs attention. In order:
 | To change… | Go to |
 | --- | --- |
 | Name, tagline, bios, photos, résumé, social links | **Profile** |
-| Projects, their screenshots, features, links | **Projects** → open one. Screenshots are managed at the bottom of the page |
+| Projects (the Projects page appears once one is published) | **Projects** → open one. Screenshots are managed at the bottom of the page |
+| Resources and per-video packs | **Resource library**, **Resource packs** |
+| Services on "Work with me" | **Services** |
 | Videos and reels | **Creator content** |
 | Subscriber / follower / view numbers | **Audience statistics** |
 | Jobs, degrees, skills, certificates | **Experience**, **Education**, **Skills**, **Certifications** |
@@ -52,6 +54,28 @@ Tips:
 - **Skill levels** only appear publicly when you tick "Show proficiency publicly".
 - **Feature on the homepage** (projects) and **Featured** (creator content) control what the homepage shows.
 - Text fields show a character count; the limit keeps layouts tidy.
+
+## Resources and "comment for the link"
+
+**Resource library** holds every tool, course and link shown on the Resources page.
+- **Add:** Resource library → **Add resource** → name, link, topic, price → **Publish**.
+- **Hide or remove:** **Unpublish** (in the list or on the item) or **Delete**.
+- Fixing a link here fixes it in every pack that uses it.
+
+**Resource packs**: one per video.
+1. Resource packs → **New resource pack**.
+2. Title, a short **code** (e.g. `ai-tools` → `yoursite/r/ai-tools`), the comment **keyword** (only you see it), and the video link.
+3. **Save as draft**. At the bottom, **Add a resource**: pick from your library, or type a new name and link (it's added to the library too). Add an optional note like "used for the thumbnail".
+4. **Publish**, then reply to commenters with `yoursite/r/ai-tools`.
+5. Optional: in **Creator content**, add the video and choose its pack. The video card and the homepage then show "Resources from this video".
+
+## Work with me
+
+**Services** are drafts at first. The "Work with me" page and its menu link appear as soon as one is published. "Start a conversation" opens the contact form with the right topic selected.
+
+## Homepage "Now" strip
+
+Profile → **Now — building / learning / creating**. Leave a line empty to hide it. Your latest video appears there automatically.
 
 ## Photos and files
 

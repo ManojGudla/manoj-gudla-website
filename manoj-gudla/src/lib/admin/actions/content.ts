@@ -5,9 +5,17 @@ import { assertAdmin } from "@/lib/auth";
 import { createSessionClient } from "@/lib/supabase/server";
 import { getCollection } from "../collections";
 import { parseFields } from "../parse";
+import { resolveRelations } from "../relations";
 import { dbErrorMessage, refreshSite, type ActionState } from "./shared";
 
 const UUID = /^[0-9a-f-]{36}$/i;
+
+function duplicateErrors(error: { code?: string } | null, data: Record<string, unknown>): Record<string, string> | undefined {
+  if (error?.code !== "23505") return undefined;
+  if ("slug" in data) return { slug: "Another project already uses this web address." };
+  if ("code" in data) return { code: "Another resource pack already uses this code." };
+  return undefined;
+}
 
 /**
  * Create or update an item in any collection.
@@ -23,9 +31,14 @@ export async function saveItem(_prev: ActionState, fd: FormData): Promise<Action
   if (id && !UUID.test(id)) return { ok: false, message: "Invalid item.", at: Date.now() };
   const intent = String(fd.get("_intent") ?? "save");
 
-  const { data, errors } = parseFields(col.fields, fd);
+  const db = await createSessionClient();
+  const fields = await resolveRelations(db, col.fields);
+  const { data, errors } = parseFields(fields, fd);
   if (col.table === "creator_stats" && data.verification === "verified" && !data.verified_on) {
     errors.verified_on = "Add the date you verified this figure.";
+  }
+  if (col.table === "resource_packs" && typeof data.code === "string" && data.code.length > 40) {
+    errors.code = "Keep the code to 40 characters or fewer — it's meant to be easy to type.";
   }
   if (Object.keys(errors).length) {
     return { ok: false, message: "Please fix the highlighted fields.", errors, at: Date.now() };
@@ -34,13 +47,10 @@ export async function saveItem(_prev: ActionState, fd: FormData): Promise<Action
   if (intent === "publish") data.status = "published";
   if (intent === "draft") data.status = "draft";
 
-  const db = await createSessionClient();
-
   if (id) {
     const { error } = await db.from(col.table).update(data).eq("id", id);
     if (error) {
-      const errs = error.code === "23505" && "slug" in data ? { slug: "Another project already uses this web address." } : undefined;
-      return { ok: false, message: dbErrorMessage(error), errors: errs, at: Date.now() };
+      return { ok: false, message: dbErrorMessage(error), errors: duplicateErrors(error, data), at: Date.now() };
     }
     refreshSite();
     const verb = intent === "publish" ? "Published" : intent === "draft" ? "Moved to draft" : "Saved";
@@ -53,8 +63,7 @@ export async function saveItem(_prev: ActionState, fd: FormData): Promise<Action
   if (!data.status) data.status = "draft";
   const { data: created, error } = await db.from(col.table).insert(data).select("id").single();
   if (error || !created) {
-    const errs = error?.code === "23505" && "slug" in data ? { slug: "Another project already uses this web address." } : undefined;
-    return { ok: false, message: dbErrorMessage(error), errors: errs, at: Date.now() };
+    return { ok: false, message: dbErrorMessage(error), errors: duplicateErrors(error, data), at: Date.now() };
   }
   refreshSite();
   redirect(`/admin/${col.key}/${created.id}?created=1`);
@@ -158,6 +167,101 @@ export async function moveProjectImage(fd: FormData): Promise<void> {
   const j = dir === "up" ? i - 1 : i + 1;
   if (i < 0 || j < 0 || j >= rows.length) return;
   const { error } = await db.rpc("swap_sort_order", { p_table: "project_images", p_a: rows[i].id, p_b: rows[j].id });
+  if (error) throw new Error(dbErrorMessage(error));
+  refreshSite();
+}
+
+/* ---------- Resource pack items ---------- */
+
+export async function addPackItem(fd: FormData): Promise<void> {
+  await assertAdmin();
+  const packId = String(fd.get("pack_id") ?? "");
+  if (!UUID.test(packId)) throw new Error("Invalid request");
+  const db = await createSessionClient();
+
+  let resourceId = String(fd.get("resource_id") ?? "");
+  const newName = String(fd.get("new_name") ?? "").trim().slice(0, 120);
+  const newUrl = String(fd.get("new_url") ?? "").trim();
+  const note = String(fd.get("note") ?? "").trim().slice(0, 300);
+
+  if (newName || newUrl) {
+    // Quick-add: create the resource in the library first.
+    if (!newName || !/^https:\/\/[^\s]+$/i.test(newUrl) || newUrl.length > 500) {
+      redirect(`/admin/resource-packs/${packId}?item_error=new#items-h`);
+    }
+    const category = String(fd.get("new_category") ?? "").trim().slice(0, 60) || "AI Tools";
+    const pricing = ["free", "freemium", "paid"].includes(String(fd.get("new_pricing"))) ? String(fd.get("new_pricing")) : "free";
+    const { data: last } = await db.from("resources").select("sort_order").order("sort_order", { ascending: false }).limit(1);
+    const { data: created, error } = await db
+      .from("resources")
+      .insert({
+        name: newName,
+        url: newUrl,
+        category,
+        pricing,
+        status: "published",
+        sort_order: ((last?.[0]?.sort_order as number | undefined) ?? 0) + 10,
+      })
+      .select("id")
+      .single();
+    if (error || !created) redirect(`/admin/resource-packs/${packId}?item_error=save#items-h`);
+    resourceId = created.id;
+  }
+
+  if (!UUID.test(resourceId)) redirect(`/admin/resource-packs/${packId}?item_error=choose#items-h`);
+  const { data: lastItem } = await db
+    .from("resource_pack_items")
+    .select("sort_order")
+    .eq("pack_id", packId)
+    .order("sort_order", { ascending: false })
+    .limit(1);
+  const { error } = await db.from("resource_pack_items").insert({
+    pack_id: packId,
+    resource_id: resourceId,
+    note,
+    sort_order: ((lastItem?.[0]?.sort_order as number | undefined) ?? 0) + 10,
+  });
+  if (error && error.code !== "23505") redirect(`/admin/resource-packs/${packId}?item_error=save#items-h`);
+  refreshSite();
+  redirect(`/admin/resource-packs/${packId}?item_added=1#items-h`);
+}
+
+export async function updatePackItem(fd: FormData): Promise<void> {
+  await assertAdmin();
+  const id = String(fd.get("id") ?? "");
+  if (!UUID.test(id)) throw new Error("Invalid request");
+  const db = await createSessionClient();
+  const { error } = await db
+    .from("resource_pack_items")
+    .update({ note: String(fd.get("note") ?? "").trim().slice(0, 300) })
+    .eq("id", id);
+  if (error) throw new Error(dbErrorMessage(error));
+  refreshSite();
+}
+
+export async function removePackItem(fd: FormData): Promise<void> {
+  await assertAdmin();
+  const id = String(fd.get("id") ?? "");
+  if (!UUID.test(id)) throw new Error("Invalid request");
+  const db = await createSessionClient();
+  const { error } = await db.from("resource_pack_items").delete().eq("id", id);
+  if (error) throw new Error(dbErrorMessage(error));
+  refreshSite();
+}
+
+export async function movePackItem(fd: FormData): Promise<void> {
+  await assertAdmin();
+  const id = String(fd.get("id") ?? "");
+  const packId = String(fd.get("pack_id") ?? "");
+  const dir = String(fd.get("dir"));
+  if (!UUID.test(id) || !UUID.test(packId)) throw new Error("Invalid request");
+  const db = await createSessionClient();
+  const { data: rows } = await db.from("resource_pack_items").select("id").eq("pack_id", packId).order("sort_order").order("created_at");
+  if (!rows) return;
+  const i = rows.findIndex((r) => r.id === id);
+  const j = dir === "up" ? i - 1 : i + 1;
+  if (i < 0 || j < 0 || j >= rows.length) return;
+  const { error } = await db.rpc("swap_sort_order", { p_table: "resource_pack_items", p_a: rows[i].id, p_b: rows[j].id });
   if (error) throw new Error(dbErrorMessage(error));
   refreshSite();
 }

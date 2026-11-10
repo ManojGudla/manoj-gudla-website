@@ -15,7 +15,7 @@ export default async function Overview() {
     return q.then((r) => r.count ?? 0);
   };
 
-  const [projects, published, drafts, creator, achievements, enquiries, newEnq, profile] = await Promise.all([
+  const [projects, published, drafts, creator, achievements, enquiries, newEnq, profile, packs, resourceCount] = await Promise.all([
     count("projects"),
     count("projects", ["status", "published"]),
     count("projects", ["status", "draft"]),
@@ -24,6 +24,8 @@ export default async function Overview() {
     count("enquiries"),
     count("enquiries", ["status", "new"]),
     db.from("profile").select("photo_media_id, resume_media_id").eq("id", 1).single(),
+    count("resource_packs", ["status", "published"]),
+    count("resources", ["status", "published"]),
   ]);
 
   // Recent updates across every collection (real timestamps from the database).
@@ -58,6 +60,8 @@ export default async function Overview() {
     { label: "Published projects", value: published, href: "/admin/projects" },
     { label: "Draft projects", value: drafts, href: "/admin/projects" },
     { label: "Creator content", value: creator, href: "/admin/creator-content" },
+    { label: "Live resource packs", value: packs, href: "/admin/resource-packs" },
+    { label: "Published resources", value: resourceCount, href: "/admin/resources" },
     { label: "Published achievements", value: achievements, href: "/admin/achievements" },
     { label: "Enquiries", value: enquiries, href: "/admin/enquiries" },
   ];
@@ -73,8 +77,8 @@ export default async function Overview() {
           <a className="btn btn--sm btn--ghost" href="/api/preview?path=/">
             Preview site with drafts
           </a>
-          <Link className="btn btn--sm" href="/admin/projects/new">
-            New project
+          <Link className="btn btn--sm" href="/admin/resource-packs/new">
+            New resource pack
           </Link>
         </div>
       </div>

@@ -21,6 +21,9 @@ const LISTS = [
   ["gallery", "gallery_items"],
   ["interests", "interests"],
   ["vision", "vision_items"],
+  ["resources", "resources"],
+  ["packs", "resource_packs"],
+  ["services", "services"],
 ] as const;
 
 function seedContent(): SiteContent {
@@ -40,6 +43,10 @@ function seedContent(): SiteContent {
     gallery: pub(seed.seedGallery),
     interests: pub(seed.seedInterests),
     vision: pub(seed.seedVision),
+    resources: pub(seed.seedResources),
+    packs: pub(seed.seedPacks),
+    packItems: seed.seedPackItems.filter((i) => seed.seedPacks.some((p) => p.id === i.pack_id && p.status === "published")),
+    services: pub(seed.seedServices),
     media: {},
     source: "seed",
     preview: false,
@@ -70,15 +77,16 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
     return q;
   });
 
-  const [profileRes, settingsRes, imagesRes, mediaRes, ...lists] = await Promise.all([
+  const [profileRes, settingsRes, imagesRes, packItemsRes, mediaRes, ...lists] = await Promise.all([
     db.from("profile").select("*").eq("id", 1).single(),
     db.from("site_settings").select("*").eq("id", 1).single(),
     db.from("project_images").select("*").order("sort_order"),
+    db.from("resource_pack_items").select("*").order("sort_order").order("created_at"),
     db.from("media_assets").select("id, storage_path, alt_text, width, height, mime_type"),
     ...listQueries,
   ]);
 
-  const failed = [profileRes, settingsRes, imagesRes, mediaRes, ...lists].find((r) => r.error);
+  const failed = [profileRes, settingsRes, imagesRes, packItemsRes, mediaRes, ...lists].find((r) => r.error);
   if (failed?.error) {
     // Throwing keeps the last successfully generated page live (ISR) instead
     // of publishing an empty or wrong page.
@@ -104,6 +112,7 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
     profile: profileRes.data,
     settings: settingsRes.data,
     projectImages: imagesRes.data ?? [],
+    packItems: packItemsRes.data ?? [],
     media,
     source: "database",
     preview,

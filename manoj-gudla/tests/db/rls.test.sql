@@ -12,6 +12,9 @@ insert into auth.users (id, email) values
 insert into public.admin_users (user_id, role) values
   ('11111111-1111-4111-8111-111111111111', 'owner');
 
+-- A published sample project (the starting content has none).
+insert into public.projects (slug, title, status) values ('sample-project', 'Sample Project', 'published');
+
 -- Draft project with a screenshot, used to test visibility rules.
 insert into public.media_assets (id, storage_path, file_name, mime_type, size_bytes, category)
 values ('33333333-3333-4333-8333-333333333333', 'project/x.webp', 'x.webp', 'image/webp', 100, 'project');
@@ -58,8 +61,8 @@ do $$ begin
 exception when insufficient_privilege then raise notice 'pass: anon cannot call submit_enquiry';
 end $$;
 
-update projects set title = 'hacked' where slug = 'manowj-geointel';
-select pg_temp.check((select title from projects where slug = 'manowj-geointel') = 'maNOWj GeoIntel', 'anon update has no effect');
+update projects set title = 'hacked' where slug = 'sample-project';
+select pg_temp.check((select title from projects where slug = 'sample-project') = 'Sample Project', 'anon update has no effect');
 
 do $$ begin
   insert into projects (slug, title) values ('evil', 'Evil');
@@ -180,6 +183,44 @@ select pg_temp.check((select sort_order from skills where name = 'SQL') = 30, 'n
 select pg_temp.check((select count(*) from creator_stats) = 1, 'published stat becomes visible to visitors');
 select pg_temp.check((select count(*) from storage.objects where bucket_id = 'incoming') = 0, 'visitors cannot see the private incoming bucket');
 select pg_temp.check((select count(*) from storage.objects where bucket_id = 'media') = 1, 'visitors can read the media bucket');
+
+-- ---------------------------------------------- resources, packs, services
+select pg_temp.as_role('postgres');
+select pg_temp.check((select count(*) from projects where slug = 'manowj-geointel') = 0, 'maNOWj GeoIntel is not in this website');
+select pg_temp.check((select count(*) from vision_items where title ilike '%GeoIntel%') = 0, 'no GeoIntel vision goal');
+select pg_temp.check((select count(*) from achievements where description ilike '%GeoIntel%') = 0, 'no GeoIntel in achievements');
+
+select pg_temp.as_role('anon');
+select pg_temp.check((select count(*) from resources) = 37, 'visitors see the 37 published resources');
+select pg_temp.check((select count(*) from resource_packs) = 0, 'draft pack hidden from visitors');
+select pg_temp.check((select count(*) from resource_pack_items) = 0, 'items of a draft pack are hidden');
+select pg_temp.check((select count(*) from services) = 0, 'draft services hidden from visitors');
+do $$ begin
+  insert into resources (name, url, status) values ('Spam', 'https://spam.example', 'published');
+  raise exception 'FAIL: anon inserted a resource';
+exception when insufficient_privilege then raise notice 'pass: anon cannot add resources';
+end $$;
+
+select pg_temp.as_role('authenticated', '11111111-1111-4111-8111-111111111111');
+update resource_packs set status = 'published' where code = 'starter-kit';
+update services set status = 'published' where title = 'Brand collaborations';
+do $$ begin
+  insert into resource_packs (code, title) values ('Bad Code!', 'x');
+  raise exception 'FAIL: invalid pack code accepted';
+exception when check_violation then raise notice 'pass: pack codes must be lowercase-with-hyphens';
+end $$;
+do $$ begin
+  insert into resources (name, url) values ('Insecure', 'http://insecure.example');
+  raise exception 'FAIL: non-https resource accepted';
+exception when check_violation then raise notice 'pass: resource links must be https';
+end $$;
+select swap_sort_order('resources', (select id from resources where name = 'ChatGPT'), (select id from resources where name = 'Claude'));
+select pg_temp.check((select sort_order from resources where name = 'ChatGPT') = 30, 'admin can reorder resources');
+
+select pg_temp.as_role('anon');
+select pg_temp.check((select count(*) from resource_packs) = 1, 'published pack visible');
+select pg_temp.check((select count(*) from resource_pack_items) = 7, 'published pack shows its 7 items');
+select pg_temp.check((select count(*) from services) = 1, 'published service visible');
 
 select pg_temp.as_role('postgres');
 \echo ALL DATABASE TESTS PASSED

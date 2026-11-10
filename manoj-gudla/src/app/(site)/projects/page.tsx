@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { FeatureProject, PageIntro, ProjectCard } from "@/components/site/blocks";
 import { getSiteContent } from "@/lib/data/content";
 
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
 
 export default async function ProjectsPage() {
   const content = await getSiteContent();
+  // Hidden until the first project is published.
+  if (content.projects.length === 0) notFound();
   const featured = content.projects.filter((p) => p.is_featured);
   const others = content.projects.filter((p) => !p.is_featured);
 

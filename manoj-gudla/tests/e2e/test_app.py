@@ -63,8 +63,7 @@ def main():
                 ("/", "Kumar"),
                 ("/about", "Meet Manoj Kumar Gudla"),
                 ("/journey", "Tata Consultancy Services"),
-                ("/projects", "maNOWj GeoIntel"),
-                ("/projects/manowj-geointel", "Key features"),
+                ("/resources", "Free resources"),
                 ("/creator", "Digital Creator"),
                 ("/achievements", "Independent Technology Initiative"),
                 ("/beyond", "Beyond work"),
@@ -74,7 +73,7 @@ def main():
                 r = page.goto(BASE + path)
                 assert r.status == 200, f"{path} returned {r.status}"
                 expect(page.locator("main")).to_contain_text(text)
-        check("All nine public pages render from the database (HTTP 200)", public_pages)
+        check("All public pages render from the database (HTTP 200)", public_pages)
 
         def no_drafts_public():
             page.goto(f"{BASE}/journey")
@@ -85,10 +84,18 @@ def main():
         check("Draft content is not shown publicly", no_drafts_public)
 
         def gis_absent():
-            for path in ["/", "/journey", "/about"]:
+            for path in ["/", "/journey", "/about", "/achievements", "/vision", "/resources", "/creator"]:
                 page.goto(BASE + path)
-                assert "GIS" not in page.locator("body").inner_text()
-        check("No GIS references anywhere public", gis_absent)
+                body = page.locator("body").inner_text()
+                assert "GIS" not in body, path
+                assert "GeoIntel" not in body, f"GeoIntel on {path}"
+            r = page.goto(BASE + "/projects/manowj-geointel")
+            assert r.status == 404, r.status
+            r = page.goto(BASE + "/projects")
+            assert r.status == 404, f"empty Projects page should be hidden ({r.status})"
+            r = page.goto(BASE + "/work-with-me")
+            assert r.status == 404, f"Work with me should be hidden until a service is published ({r.status})"
+        check("No GIS or GeoIntel anywhere; empty pages stay hidden", gis_absent)
 
         def unknown_404():
             r = page.goto(f"{BASE}/projects/does-not-exist")
@@ -107,14 +114,14 @@ def main():
             ld = json.loads(page.locator('script[type="application/ld+json"]').first.inner_text())
             assert ld["@type"] == "Person" and ld["name"] == "Manoj Kumar Gudla"
             sm = urllib.request.urlopen(BASE + "/sitemap.xml").read().decode()
-            assert "/projects/manowj-geointel" in sm and BASE in sm
+            assert "/resources" in sm and BASE in sm and "/projects" not in sm
             rb = urllib.request.urlopen(BASE + "/robots.txt").read().decode()
             assert "Disallow: /admin" in rb
             og_img = urllib.request.urlopen(BASE + "/opengraph-image")
             assert og_img.headers["content-type"] == "image/png"
             # Every page title is unique
             titles = set()
-            for path in ["/", "/about", "/journey", "/projects", "/creator", "/contact"]:
+            for path in ["/", "/about", "/journey", "/resources", "/creator", "/contact"]:
                 page.goto(BASE + path)
                 titles.add(page.title())
             assert len(titles) == 6, titles
@@ -133,7 +140,10 @@ def main():
             page.evaluate("localStorage.removeItem('theme')")
             page.reload()
             before = page.get_attribute("html", "data-theme")
+            page.wait_for_load_state("networkidle")
             page.click("button[aria-label*='theme']")
+            # The switch runs inside a view transition, so it lands a moment after the click.
+            page.wait_for_function("b => document.documentElement.getAttribute('data-theme') !== b", arg=before)
             after = page.get_attribute("html", "data-theme")
             assert before != after, (before, after)
             page.reload()
@@ -249,21 +259,22 @@ def main():
             login(page, *ADMIN)
             page.wait_for_url(BASE + "/admin")
             expect(page.locator("h1")).to_have_text("Overview")
-            kpi = page.locator(".kpi", has_text="Projects").first.locator("strong").inner_text()
-            assert kpi == "1", kpi
+            kpi = page.locator(".kpi", has_text="Published resources").first.locator("strong").inner_text()
+            assert kpi == "37", kpi
             page.screenshot(path=f"{SHOTS}/admin-overview.png", full_page=True)
         check("Admin signs in; overview shows real database counts", admin_login)
 
         # ---------------- Content editing ----------------
-        def edit_project():
-            page.goto(BASE + "/admin/projects")
-            page.click("text=maNOWj GeoIntel")
-            page.fill("#f-tagline", "Location answers with their sources shown.")
+        def edit_resource():
+            page.goto(BASE + "/admin/resources")
+            page.click(".title-cell >> text=ChatGPT")
+            page.fill("#f-description", "My everyday AI assistant for drafts and debugging.")
             page.click("button:has-text('Update')")
             expect(page.locator(".form-status")).to_contain_text("Saved")
-            page.goto(BASE + "/projects/manowj-geointel")
-            expect(page.locator("main")).to_contain_text("Location answers with their sources shown.")
-        check("Editing a project updates the public page immediately", edit_project)
+            page.goto(BASE + "/resources?q=chatgpt")
+            expect(page.locator(".res-card")).to_have_count(1)
+            expect(page.locator(".res-card")).to_contain_text("My everyday AI assistant")
+        check("Editing a resource updates the public page immediately", edit_resource)
 
         def validation():
             page.goto(BASE + "/admin/projects/new")
@@ -299,14 +310,17 @@ def main():
         check("Draft → preview → publish workflow", create_publish)
 
         def reorder():
-            page.goto(BASE + "/admin/projects")
+            page.goto(BASE + "/admin/resources")
             first = page.locator("tbody tr").first.locator(".title-cell a").inner_text()
-            page.locator("tr", has_text="Test Product").locator("button[aria-label^='Move Test Product up']").click()
+            second = page.locator("tbody tr").nth(1).locator(".title-cell a").inner_text()
+            page.locator("tbody tr").nth(1).locator("button[aria-label$=' up']").click()
             page.wait_for_timeout(800)
             page.reload()
             now_first = page.locator("tbody tr").first.locator(".title-cell a").inner_text()
-            assert now_first == "Test Product" and first != now_first, (first, now_first)
-        check("Reordering changes the order", reorder)
+            assert now_first == second and now_first != first, (first, second, now_first)
+            page.goto(BASE + "/resources")
+            assert page.locator(".res-card__name").first.inner_text() == second
+        check("Reordering changes the order on the site", reorder)
 
         def delete_project():
             page.goto(BASE + "/admin/projects")
@@ -385,7 +399,7 @@ def main():
             page.click("button:has-text('Save changes')")
             expect(page.locator(".form-status")).to_contain_text("saved")
             page.goto(BASE + "/")
-            img = page.locator(".hero__portrait img")
+            img = page.locator(".hero2__portrait img")
             expect(img).to_have_attribute("alt", "Portrait of Manoj")
             page.screenshot(path=f"{SHOTS}/home-with-portrait.png")
         check("Profile photo chosen in admin appears on the homepage", portrait)
@@ -407,6 +421,96 @@ def main():
             page.goto(BASE + "/admin/enquiries?status=all")
             expect(page.locator("tr", has_text="Priya Sharma")).to_have_count(0)
         check("Enquiries: new → read on open → responded → deleted", enquiries)
+
+        def resource_pack_flow():
+            page.goto(BASE + "/admin/resource-packs/new")
+            page.fill("#f-title", "5 AI tools I use every day")
+            page.fill("#f-code", "ai-tools")
+            page.fill("#f-keyword", "AI")
+            page.fill("#f-video_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+            page.select_option("#f-platform", "youtube")
+            page.click("button:has-text('Save as draft')")
+            page.wait_for_url(re.compile(r".*/admin/resource-packs/[0-9a-f-]{36}\?created=1"))
+            pack_url = page.url.split("?")[0]
+            # add from library
+            page.select_option("#add-resource", label="Claude")
+            page.fill("#add-note", "What I used to write the script")
+            page.click("button:has-text('Add to pack')")
+            expect(page.locator(".notice--success")).to_contain_text("Added")
+            # quick-add a brand-new resource
+            page.fill("#new-name", "Perplexity")
+            page.fill("#new-url", "https://www.perplexity.ai/")
+            page.select_option("#new-price", "freemium")
+            page.click("button:has-text('Add to pack')")
+            expect(page.locator("#items-h")).to_contain_text("(2)")
+            expect(page.locator(".panel", has=page.locator("#items-h"))).to_contain_text("Perplexity")
+            expect(page.locator(".panel", has=page.locator("#items-h"))).not_to_contain_text("Deleted resource")
+            # bad quick-add shows an inline error, not a crash
+            page.fill("#new-name", "Broken")
+            page.fill("#new-url", "http://insecure.example")
+            page.click("button:has-text('Add to pack')")
+            expect(page.locator(".notice--error")).to_contain_text("https://")
+            # draft pack is not public
+            r = page.goto(BASE + "/r/ai-tools")
+            assert r.status == 404, f"draft pack public ({r.status})"
+            page.goto(pack_url)
+            page.click("button:has-text('Publish')")
+            expect(page.locator(".form-status")).to_contain_text("Published")
+            r = page.goto(BASE + "/r/ai-tools")
+            assert r.status == 200, r.status
+            expect(page.locator(".pack-item")).to_have_count(2)
+            expect(page.locator(".pack-item").first).to_contain_text("What I used to write the script")
+            expect(page.locator(".pack__video iframe")).to_have_attribute("src", re.compile("youtube-nocookie.com/embed/dQw4w9WgXcQ"))
+            page.goto(BASE + "/resources")
+            expect(page.locator(".pack-card")).to_contain_text("5 AI tools I use every day")
+            page.goto(BASE + "/resources?q=perplexity")
+            expect(page.locator(".res-card")).to_have_count(1)
+        check("Resource pack: create, add from library, quick-add, publish, /r/ai-tools works", resource_pack_flow)
+
+        def video_links_pack():
+            page.goto(BASE + "/admin/creator-content/new")
+            page.fill("#f-title", "5 AI tools I use every day")
+            page.fill("#f-url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+            page.select_option("#f-resource_pack_id", label="5 AI tools I use every day")
+            page.click("button:has-text('Publish')")
+            page.wait_for_url(re.compile(r".*created=1"))
+            page.goto(BASE + "/creator")
+            page.click("text=Resources from this video")
+            page.wait_for_url("**/r/ai-tools")
+            page.goto(BASE + "/")
+            expect(page.locator(".now")).to_contain_text("5 AI tools I use every day")
+            expect(page.locator(".t-video")).to_contain_text("Resources from this video")
+        check("A video linked to a pack shows 'Resources from this video' (creator page + homepage)", video_links_pack)
+
+        def services_flow():
+            page.goto(BASE + "/admin/services")
+            row = page.locator("tr", has_text="Brand collaborations")
+            row.locator("button:has-text('Publish')").click()
+            expect(row.locator(".pill")).to_have_text("Published")
+            r = page.goto(BASE + "/work-with-me")
+            assert r.status == 200, r.status
+            expect(page.locator("main")).to_contain_text("Brand collaborations")
+            expect(page.locator("nav.nav")).to_contain_text("Work with me")
+            page.click("text=Start a conversation")
+            page.wait_for_url("**/contact?topic=brand")
+            assert page.is_checked("input[value=brand]")
+        check("Work with me appears only after a service is published, and links to the right enquiry type", services_flow)
+
+        def command_menu():
+            page.goto(BASE + "/", wait_until="networkidle")
+            page.keyboard.press("Control+k")
+            expect(page.locator("dialog.cmdk")).to_be_visible()
+            page.keyboard.type("journey")
+            page.keyboard.press("Enter")
+            page.wait_for_url("**/journey")
+            page.goto(BASE + "/")
+            page.click(".t-cmd")
+            expect(page.locator("dialog.cmdk")).to_be_visible()
+            page.keyboard.type("ai tools")
+            expect(page.locator(".cmdk__item").first).to_contain_text("5 AI tools I use every day")
+            page.keyboard.press("Escape")
+            expect(page.locator("dialog.cmdk")).not_to_be_visible()
+        check("Ctrl+K menu opens from keyboard and tile, searches content, navigates", command_menu)
 
         def settings():
             page.goto(BASE + "/admin/settings")
