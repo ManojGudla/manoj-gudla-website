@@ -496,6 +496,21 @@ def main():
             assert page.is_checked("input[value=brand]")
         check("Work with me appears only after a service is published, and links to the right enquiry type", services_flow)
 
+        def resources_interactive():
+            page.goto(BASE + "/resources", wait_until="networkidle")
+            page.click(".path__goal:has-text('Learn AI & machine learning')")
+            expect(page.locator(".path__step")).not_to_have_count(0)
+            expect(page.locator(".path__step").first).to_contain_text("Free")
+            # save two resources, filter to saved, survives reload
+            page.locator(".res-item", has_text="Kaggle").locator(".save-btn").click()
+            page.locator(".res-item", has_text="SQLBolt").locator(".save-btn").click()
+            expect(page.locator(".saved-toggle")).to_contain_text("2")
+            page.goto(BASE + "/resources")
+            expect(page.locator(".saved-toggle")).to_be_enabled()
+            page.click(".saved-toggle")
+            expect(page.locator(".res-item")).to_have_count(2)
+        check("Resources: learning-path finder and save-for-later work (and saved items persist)", resources_interactive)
+
         def command_menu():
             page.goto(BASE + "/", wait_until="networkidle")
             page.keyboard.press("Control+k")

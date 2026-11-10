@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PathFinder } from "@/components/site/PathFinder";
 import { ResourceLibrary } from "@/components/site/ResourceLibrary";
 import { getSiteContent } from "@/lib/data/content";
 import { formatDate, platformLabel } from "@/lib/format";
@@ -49,6 +50,10 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
           </ul>
         </section>
       )}
+
+      <div className="container">
+        <PathFinder resources={resources} />
+      </div>
 
       <section className="container" aria-labelledby="lib-h" style={{ paddingBottom: "var(--section)" }}>
         <h2 id="lib-h" className="sub-h">

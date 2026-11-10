@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CommandTrigger } from "@/components/site/CommandMenu";
+import { HeroFx } from "@/components/site/HeroFx";
 import { HeroScene } from "@/components/site/HeroScene";
 import { Photo } from "@/components/site/Photo";
 import { SocialLinks } from "@/components/site/SocialLinks";
@@ -74,7 +75,9 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
       {/* ---------------- Hero (always a dark stage) ---------------- */}
-      <section className="stage hero2" aria-labelledby="hero-name">
+      <section className="stage hero2" aria-labelledby="hero-name" data-hero>
+        <div className="hero2__glow" aria-hidden />
+        <HeroFx />
         <div className="container">
           <div className="hero2__grid">
             <div>
@@ -115,17 +118,20 @@ export default async function HomePage() {
             </div>
 
             <div className="hero2__visual fade-up" style={{ ["--d" as string]: "150ms" }}>
-              <HeroScene />
-              <div className="hero2__portrait" data-parallax="0.05">
-                <Photo media={portrait} label="Portrait photograph" mark={initials} priority sizes="(min-width: 960px) 420px, 80vw" />
-                {current && (
-                  <div className="hero2__plate">
-                    <span className="pulse" aria-hidden />
-                    <span>
-                      <strong>{current.role_title || "Currently"}</strong> at {current.organisation.replace(/\s*\(.*\)$/, "")}
-                    </span>
-                  </div>
-                )}
+              <div className="hero2__tilt">
+                <HeroScene />
+                <div className="hero2__portrait" data-parallax="0.05">
+                  <Photo media={portrait} label="Portrait photograph" mark={initials} priority sizes="(min-width: 960px) 420px, 80vw" />
+                  <span className="hero2__glare" aria-hidden />
+                  {current && (
+                    <div className="hero2__plate">
+                      <span className="pulse" aria-hidden />
+                      <span>
+                        <strong>{current.role_title || "Currently"}</strong> at {current.organisation.replace(/\s*\(.*\)$/, "")}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -215,6 +221,9 @@ export default async function HomePage() {
                   Search
                 </button>
               </form>
+              <Link href="/resources#path" className="tile__link">
+                Not sure where to start? Find your path
+              </Link>
             </article>
 
             {/* Latest video / creator */}

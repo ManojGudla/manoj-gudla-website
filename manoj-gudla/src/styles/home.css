@@ -1311,3 +1311,300 @@ dialog.cmdk::backdrop {
     display: none;
   }
 }
+
+/* ---------- Save for later ---------- */
+.res-item {
+  position: relative;
+}
+
+.res-card__top {
+  justify-content: flex-start !important;
+  padding-right: 2.25rem;
+  align-items: center;
+}
+
+.save-btn {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+}
+
+.save-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.save-btn[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.save-btn:active {
+  transform: scale(0.9);
+}
+
+.saved-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+
+.saved-toggle span {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.saved-toggle[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.saved-toggle[aria-pressed="true"] span {
+  color: inherit;
+}
+
+.saved-toggle:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---------- Learning path finder ---------- */
+.path {
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  background: var(--surface);
+}
+
+.path__head h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+.path__head p {
+  margin-top: 0.4rem;
+}
+
+.path__goals {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.path__goal {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+}
+
+.path__goal:hover {
+  border-color: var(--ink);
+}
+
+.path__goal:active {
+  transform: scale(0.98);
+}
+
+.path__goal[aria-checked="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.path__result {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.path__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--ink-2);
+}
+
+.path__steps {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.path__steps li {
+  animation: step-in 420ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 60ms);
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .path__steps li {
+    animation: none;
+  }
+}
+
+.path__step {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  text-decoration: none;
+  transition: border-color var(--t-fast);
+}
+
+.path__step:hover {
+  border-color: var(--accent);
+}
+
+.path__n {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+}
+
+.path__body {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.path__body strong {
+  font-weight: 600;
+}
+
+.path__step:hover .path__body strong {
+  color: var(--accent);
+}
+
+.path__body span {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+/* ---------- Hero signature: living type, lit grid, tilting portrait ---------- */
+.hero2__glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgb(139 149 255 / 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(139 149 255 / 0.35) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(220px circle at var(--gx, -999px) var(--gy, -999px), #000, transparent 70%);
+  -webkit-mask-image: radial-gradient(220px circle at var(--gx, -999px) var(--gy, -999px), #000, transparent 70%);
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out);
+}
+
+.hero2.is-live .hero2__glow {
+  opacity: 1;
+}
+
+.hero__name .ch {
+  /* weight changes smoothly as the pointer moves across the name */
+  transition: font-weight 260ms var(--ease-out), translate 260ms var(--ease-out);
+  translate: 0 var(--lift, 0);
+}
+
+.hero2__tilt {
+  position: relative;
+  height: 100%;
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 600ms var(--ease-out);
+}
+
+.hero2__glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(60% 50% at var(--glx, 50%) var(--gly, 0%), rgb(255 255 255 / 0.22), transparent 70%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out);
+}
+
+.hero2.is-live .hero2__glare {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero2__tilt,
+  .hero__name .ch {
+    transition: none;
+  }
+}
+
+/* Once, after the name rises: a weight wave runs through the letters.
+   Phones get this too, since they have no pointer to play with. */
+.hero2 .hero__name .ch {
+  animation:
+    rise var(--t-slow) var(--ease-out) forwards,
+    weight-wave 900ms var(--ease-in-out);
+  animation-delay:
+    calc(var(--i) * 28ms + 60ms),
+    calc(var(--i) * 55ms + 1000ms);
+}
+
+@keyframes weight-wave {
+  0%,
+  100% {
+    font-weight: 650;
+  }
+
+  45% {
+    font-weight: 900;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero2 .hero__name .ch {
+    animation: none;
+    transform: none;
+  }
+}

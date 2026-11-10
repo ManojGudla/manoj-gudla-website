@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/site/ContactForm";
+import { CopyText } from "@/components/site/CopyText";
 import { SocialLinks } from "@/components/site/SocialLinks";
 import { getSiteContent } from "@/lib/data/content";
 import { turnstileSiteKey } from "@/lib/env";
@@ -32,6 +33,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
               <a className="contact-email" href={`mailto:${email}`}>
                 {email}
               </a>
+              <div style={{ marginTop: "0.9rem" }}>
+                <CopyText text={email} label="Copy email address" />
+              </div>
             </div>
           )}
           <div style={{ marginTop: "2rem" }}>

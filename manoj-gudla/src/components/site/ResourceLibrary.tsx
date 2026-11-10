@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Pricing, Resource } from "@/lib/types";
 
 const PRICING: Record<Pricing, string> = { free: "Free", freemium: "Free + paid plans", paid: "Paid" };
@@ -14,16 +14,42 @@ export function ResourceLibrary({ resources, initialQuery, initialCategory }: { 
   const [q, setQ] = useState(initialQuery);
   const [cat, setCat] = useState(categories.includes(initialCategory) ? initialCategory : "");
   const [freeOnly, setFreeOnly] = useState(false);
+  const [saved, setSaved] = useState<string[]>([]);
+  const [savedOnly, setSavedOnly] = useState(false);
+
+  // Saved resources live in this browser only (a per-visitor convenience).
+  useEffect(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem("saved-resources") ?? "[]");
+      if (Array.isArray(raw)) setSaved(raw.filter((x) => typeof x === "string"));
+    } catch {
+      /* storage unavailable — saving simply won't persist */
+    }
+  }, []);
+
+  function toggleSave(id: string) {
+    setSaved((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      try {
+        localStorage.setItem("saved-resources", JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      if (next.length === 0) setSavedOnly(false);
+      return next;
+    });
+  }
 
   const shown = useMemo(() => {
     const words = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
     return resources.filter((r) => {
       if (cat && r.category !== cat) return false;
       if (freeOnly && r.pricing !== "free") return false;
+      if (savedOnly && !saved.includes(r.id)) return false;
       const hay = `${r.name} ${r.description} ${r.category} ${r.tag}`.toLowerCase();
       return words.every((w) => hay.includes(w));
     });
-  }, [resources, q, cat, freeOnly]);
+  }, [resources, q, cat, freeOnly, savedOnly, saved]);
 
   function sync(nextQ: string, nextCat: string) {
     const params = new URLSearchParams();
@@ -59,6 +85,15 @@ export function ResourceLibrary({ resources, initialQuery, initialCategory }: { 
           <input type="checkbox" checked={freeOnly} onChange={(e) => setFreeOnly(e.target.checked)} />
           Free only
         </label>
+        <button
+          type="button"
+          className="saved-toggle"
+          aria-pressed={savedOnly}
+          disabled={saved.length === 0}
+          onClick={() => setSavedOnly((v) => !v)}
+        >
+          <BookmarkIcon filled={savedOnly} /> Saved <span>{saved.length}</span>
+        </button>
       </div>
 
       <div className="lib__cats" role="group" aria-label="Filter by topic">
@@ -93,6 +128,7 @@ export function ResourceLibrary({ resources, initialQuery, initialCategory }: { 
               setQ("");
               setCat("");
               setFreeOnly(false);
+              setSavedOnly(false);
               sync("", "");
             }}
           >
@@ -102,7 +138,7 @@ export function ResourceLibrary({ resources, initialQuery, initialCategory }: { 
       ) : (
         <ul className="res-grid" role="list">
           {shown.map((r) => (
-            <li key={r.id}>
+            <li key={r.id} className="res-item">
               <a href={r.url} target="_blank" rel="noopener noreferrer" className="res-card">
                 <span className="res-card__top">
                   <span className="res-card__cat">{r.category}</span>
@@ -116,10 +152,27 @@ export function ResourceLibrary({ resources, initialQuery, initialCategory }: { 
                 </span>
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
+              <button
+                type="button"
+                className="save-btn"
+                aria-pressed={saved.includes(r.id)}
+                aria-label={saved.includes(r.id) ? `Remove ${r.name} from saved` : `Save ${r.name} for later`}
+                onClick={() => toggleSave(r.id)}
+              >
+                <BookmarkIcon filled={saved.includes(r.id)} />
+              </button>
             </li>
           ))}
         </ul>
       )}
     </div>
+  );
+}
+
+function BookmarkIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M6 3h12v18l-6-4-6 4z" strokeLinejoin="round" />
+    </svg>
   );
 }
