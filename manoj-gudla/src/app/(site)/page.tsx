@@ -6,6 +6,7 @@ import { Photo } from "@/components/site/Photo";
 import { SocialLinks } from "@/components/site/SocialLinks";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { PlayIcon } from "@/components/ui/icons";
+import { DEFAULT_PORTRAIT } from "@/content/defaults";
 import { getSiteContent } from "@/lib/data/content";
 import { siteUrl } from "@/lib/env";
 import { dateRange, platformLabel, statValue, youtubeId } from "@/lib/format";
@@ -33,7 +34,7 @@ export default async function HomePage() {
   const lineOne = nameParts.length > 1 ? nameParts.slice(0, -1).join(" ") : nameParts[0];
   const surname = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
   const initials = (nameParts[0][0] ?? "") + (nameParts.length > 1 ? nameParts[nameParts.length - 1][0] : "");
-  const portrait = resolveMediaFrom(content, profile.photo_media_id);
+  const portrait = resolveMediaFrom(content, profile.photo_media_id) ?? DEFAULT_PORTRAIT;
   const current = experience.find((e) => e.is_current) ?? experience[0];
 
   // Latest video: newest by publish date, otherwise first featured / first in list.
@@ -63,7 +64,7 @@ export default async function HomePage() {
     worksFor: current ? { "@type": "Organization", name: current.organisation } : undefined,
     alumniOf: education.filter((e) => e.institution).map((e) => ({ "@type": "CollegeOrUniversity", name: e.institution })),
     sameAs: [profile.linkedin_url, profile.instagram_url, profile.youtube_url, profile.github_url].filter(Boolean),
-    image: portrait?.url,
+    image: portrait.url.startsWith("/") ? `${siteUrl}${portrait.url}` : portrait.url,
   };
 
   let n = 0; // stagger index for tile entrances
