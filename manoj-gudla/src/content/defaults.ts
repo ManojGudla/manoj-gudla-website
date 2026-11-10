@@ -53,8 +53,8 @@ export const DEFAULT_GALLERY: { id: string; caption: string; media: ResolvedMedi
 
 export const DEFAULT_JOURNEY_PHOTO: ResolvedMedia = {
   id: "default-journey",
-  url: "/images/manoj-work-v3.jpg",
-  alt: "Manoj Kumar Gudla at his desk with a laptop",
+  url: "/images/manoj-work-v4.jpg",
+  alt: "Manoj Kumar Gudla at his desk with a laptop in the office",
   width: 960,
   height: 1200,
   mime: "image/jpeg",
