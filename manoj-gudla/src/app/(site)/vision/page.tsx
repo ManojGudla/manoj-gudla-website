@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DraftFlag, Horizons, PageIntro } from "@/components/site/blocks";
+import { Horizons, PageIntro } from "@/components/site/blocks";
 import { getSiteContent } from "@/lib/data/content";
-import { visionAreaLabel } from "@/lib/format";
-import type { VisionArea } from "@/lib/types";
 
 export const revalidate = 300;
 
@@ -16,7 +14,6 @@ export const metadata: Metadata = {
 
 export default async function VisionPage() {
   const { vision } = await getSiteContent();
-  const areas = Object.keys(visionAreaLabel) as VisionArea[];
 
   return (
     <>
@@ -41,33 +38,6 @@ export default async function VisionPage() {
           </div>
         </section>
       )}
-
-      <section className="section section--band" aria-labelledby="areas-h">
-        <div className="container split">
-          <div className="split__head">
-            <h2 className="section-title" id="areas-h" data-reveal>
-              By area
-            </h2>
-          </div>
-          <dl className="facts" style={{ gridTemplateColumns: "1fr" }}>
-            {areas.map((a) => {
-              const list = vision.filter((v) => v.area === a);
-              if (!list.length) return null;
-              return (
-                <div key={a}>
-                  <dt>{visionAreaLabel[a]}</dt>
-                  {list.map((v) => (
-                    <dd key={v.id}>
-                      {v.title} <DraftFlag status={v.status} />
-                      {v.description && <small>{v.description}</small>}
-                    </dd>
-                  ))}
-                </div>
-              );
-            })}
-          </dl>
-        </div>
-      </section>
 
       <section className="section">
         <div className="container cta">

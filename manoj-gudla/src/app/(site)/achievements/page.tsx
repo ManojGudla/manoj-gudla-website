@@ -86,9 +86,12 @@ export default async function AchievementsPage() {
                 Certifications
               </h2>
             </div>
-            <ul className="rows" role="list">
+            <ul className="certs" role="list">
               {certifications.map((c) => (
-                <li key={c.id}>
+                <li key={c.id} className="spot">
+                  <span className="certs__mono" aria-hidden>
+                    {(c.issuer || c.title).trim().charAt(0).toUpperCase()}
+                  </span>
                   <span className="title">
                     {c.title} <DraftFlag status={c.status} />
                   </span>

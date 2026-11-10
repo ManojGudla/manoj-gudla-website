@@ -133,7 +133,7 @@ export function FeatureProject({ project, content }: { project: Project; content
  * Stand-in visual until a screenshot is uploaded (Dashboard → Projects → Cover):
  * a browser window with the site's address and its first features.
  */
-function ProjectWindow({ project }: { project: Project }) {
+export function ProjectWindow({ project }: { project: Project }) {
   let host = "";
   try {
     host = project.live_url ? new URL(project.live_url).host.replace(/^www\./, "") : "";

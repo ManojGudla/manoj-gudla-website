@@ -829,11 +829,12 @@ a.feature:hover {
 .ticks li::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0.62em;
-  width: 0.7rem;
-  height: 1px;
-  background: var(--accent);
+  left: 0.15rem;
+  top: 0.5em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
 }
 
 .shots {
@@ -2558,4 +2559,56 @@ main {
   height: 2px;
   border-radius: 2px;
   background: var(--accent);
+}
+
+/* Project page: visual on the right of the dark hero */
+.detail-visual {
+  width: 100%;
+}
+
+.detail-visual :where(img, .frame) {
+  border-radius: var(--r-panel);
+}
+
+@media (min-width: 900px) {
+  .detail-hero2 {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) !important;
+  }
+}
+
+/* 404 */
+.notfound {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.notfound .lead {
+  margin-top: 1.25rem;
+}
+
+.notfound__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+}
+
+.notfound__links a {
+  display: inline-block;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color var(--t-med), background var(--t-med);
+}
+
+.notfound__links a:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DraftFlag, StatusChip } from "@/components/site/blocks";
+import { DraftFlag, Kicker, PageHero, ProjectWindow, StatusChip } from "@/components/site/blocks";
 import { Photo } from "@/components/site/Photo";
 import { resolveMediaFrom } from "@/components/site/resolve";
 import { ExternalIcon, GitHubIcon } from "@/components/ui/icons";
@@ -62,36 +62,36 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <article>
-        <header className="container detail-hero">
-          <p className="meta">
-            <Link href="/projects" className="text-link">
-              Projects
-            </Link>
-          </p>
-          <h1 data-reveal>
-            {project.title} <DraftFlag status={project.status} />
-          </h1>
-          <p className="lead" style={{ maxWidth: "46ch" }}>
-            {project.tagline}
-          </p>
-          <div className="section-foot" style={{ marginTop: "2rem" }}>
-            {project.live_url && (
-              <a href={project.live_url} className="btn" target="_blank" rel="noopener noreferrer">
-                <ExternalIcon /> Visit the live site
-              </a>
-            )}
-            {project.repo_url && (
-              <a href={project.repo_url} className="btn btn--ghost" target="_blank" rel="noopener noreferrer">
-                <GitHubIcon /> GitHub
-              </a>
+        <PageHero mark="Build" className="page-intro--split detail-hero2">
+          <div>
+            <Kicker path="projects" />
+            <h1 data-reveal>
+              {project.title} <DraftFlag status={project.status} />
+            </h1>
+            <p className="lead" data-reveal style={{ ["--rd" as string]: "120ms", maxWidth: "40ch" }}>
+              {project.tagline}
+            </p>
+            <div className="section-foot" style={{ marginTop: "2rem" }}>
+              {project.live_url && (
+                <a href={project.live_url} className="btn" target="_blank" rel="noopener noreferrer">
+                  <ExternalIcon /> Visit the live site
+                </a>
+              )}
+              {project.repo_url && (
+                <a href={project.repo_url} className="btn btn--ghost" target="_blank" rel="noopener noreferrer">
+                  <GitHubIcon /> GitHub
+                </a>
+              )}
+            </div>
+          </div>
+          <div className="detail-visual" data-reveal style={{ ["--rd" as string]: "200ms" }}>
+            {cover ? (
+              <Photo media={cover} label="Project cover screenshot" priority sizes="(min-width: 900px) 560px, 100vw" />
+            ) : (
+              <ProjectWindow project={project} />
             )}
           </div>
-          {cover && (
-            <div className="detail-cover" data-parallax="0.04">
-              <Photo media={cover} label="Project cover screenshot" priority sizes="(min-width: 1240px) 1240px, 100vw" />
-            </div>
-          )}
-        </header>
+        </PageHero>
 
         <div className="container section detail-grid">
           <div>
