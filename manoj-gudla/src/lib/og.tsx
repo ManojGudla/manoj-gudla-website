@@ -25,51 +25,49 @@ export async function renderShareImage() {
           width: "100%",
           height: "100%",
           display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
           background: "#0b0c10",
           backgroundImage:
-            "radial-gradient(circle at 85% 10%, rgba(139,149,255,0.30), transparent 45%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+            "radial-gradient(circle at 50% 0%, rgba(139,149,255,0.28), transparent 55%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
           backgroundSize: "100% 100%, 60px 60px, 60px 60px",
           color: "#f4f2ee",
-          padding: "64px 72px",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, paddingRight: 48 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 24, color: "#a3a8bb" }}>
-            <div style={{ width: 28, height: 3, borderRadius: 3, background: "#8b95ff" }} />
-            Personal website
-          </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 92, fontWeight: 700, lineHeight: 1, letterSpacing: -3 }}>{lineOne}</div>
-            <div style={{ fontSize: 92, fontWeight: 700, lineHeight: 1.05, letterSpacing: -3, color: "#9a9db0" }}>{last}</div>
-            <div style={{ marginTop: 26, fontSize: 34, color: "#d9dae3" }}>{tagline}</div>
-          </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            {roles.map((r) => (
-              <div
-                key={r}
-                style={{
-                  display: "flex",
-                  padding: "8px 18px",
-                  borderRadius: 999,
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  fontSize: 22,
-                  color: "#d9dae3",
-                }}
-              >
-                {r}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        {/* Everything important sits inside the middle 600px, so square crops (WhatsApp, iMessage) keep it. */}
+        <div style={{ display: "flex", alignItems: "center", width: 600 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={OG_PORTRAIT}
-            width={400}
-            height={500}
+            width={232}
+            height={290}
             alt=""
-            style={{ borderRadius: 24, objectFit: "cover", border: "1px solid rgba(255,255,255,0.15)" }}
+            style={{ borderRadius: 20, objectFit: "cover", border: "1px solid rgba(255,255,255,0.18)" }}
           />
+          <div style={{ display: "flex", flexDirection: "column", marginLeft: 36, width: 332 }}>
+            <div style={{ width: 30, height: 3, borderRadius: 3, background: "#8b95ff", marginBottom: 20 }} />
+            <div style={{ fontSize: 54, fontWeight: 700, lineHeight: 1.02, letterSpacing: -2 }}>{lineOne}</div>
+            <div style={{ fontSize: 54, fontWeight: 700, lineHeight: 1.08, letterSpacing: -2, color: "#9a9db0" }}>{last}</div>
+            <div style={{ marginTop: 18, fontSize: 22, lineHeight: 1.35, color: "#d9dae3" }}>{tagline}</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, width: 600, marginTop: 40 }}>
+          {roles.map((r) => (
+            <div
+              key={r}
+              style={{
+                display: "flex",
+                padding: "6px 16px",
+                borderRadius: 999,
+                border: "1px solid rgba(255,255,255,0.18)",
+                fontSize: 18,
+                color: "#d9dae3",
+              }}
+            >
+              {r}
+            </div>
+          ))}
         </div>
       </div>
     ),
